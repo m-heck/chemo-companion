@@ -1,38 +1,94 @@
+/* General styling */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  min-height: 100vh;
+}
+
+/* Header styling */
+.App-header {
+  background-color: #A7C7E7; /* Pastel blue */
   color: white;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.App-link {
-  color: #61dafb;
+.App-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-header p {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Main content */
+.App-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.features-section, .login-section {
+  background-color: white;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.features-section h2, .login-section h2 {
+  font-size: 1.8rem;
+  color: #A7C7E7; /* Pastel blue */
+  margin-bottom: 1rem;
+}
+
+.features-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.features-section li {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+/* Login button styling */
+.login-section p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.login-button {
+  background-color: #A7C7E7; /* Pastel blue */
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #8bb2d6; /* Slightly darker pastel blue on hover */
+}
+
+/* Footer styling */
+.App-footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  font-size: 0.9rem;
 }
