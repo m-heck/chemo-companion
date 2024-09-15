@@ -1,4 +1,3 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,17 +31,25 @@
             messageInput.value = '';
             document.getElementById('chat-box').innerHTML += `<div class="message user">${message}</div>`;
             
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message })
-            });
-            
-            const data = await response.json();
-            document.getElementById('chat-box').innerHTML += `<div class="message bot">${data.reply}</div>`;
-            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('chat-box').innerHTML += `<div class="message bot">${data.reply}</div>`;
+                    document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+                } else {
+                    document.getElementById('chat-box').innerHTML += `<div class="message bot">Error: ${response.statusText}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('chat-box').innerHTML += `<div class="message bot">Error: ${error.message}</div>`;
+            }
         });
     </script>
 </body>
