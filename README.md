@@ -49,3 +49,6 @@ Technologies: React, Express.js, SQLite, Netlify, Git, ChatGPT
 
 ## Target Audience
 The platform is designed with both patients and medical staff in mind. For patients, the focus is on improving their overall experience by providing access to features like symptom tracking, personalized AI support, and stress-relief tools. These resources aim to empower patients by giving them a sense of control over their treatment journey and making it easier to manage their day-to-day health. On the other side, medical staff will benefit from tools that help them monitor patient health data more efficiently. They’ll be able to track symptoms and progress in real time, send updates or reminders, and communicate directly with patients through the platform. This two-way system helps streamline care, making it easier for medical professionals to stay connected with their patients while ensuring patients feel supported throughout their treatment.
+
+## Design
+[ChemoCompaion Wireframe.pdf](https://github.com/user-attachments/files/17047966/ChemoCompaion.Wireframe.pdf)
