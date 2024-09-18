@@ -1,8 +1,8 @@
-import './App.css';
+import '../App/App.css';
 
-function App() {
+function Landing() {
   return (
-    <div className="App">
+    <div className="Landing">
       <header className="App-header">
         <h1>ChemoCompanion</h1>
         <p>Your trusted companion through chemotherapy, offering support, guidance, and resources.</p>
@@ -12,7 +12,7 @@ function App() {
         <section className="features-section">
           <h2>What’s Coming Soon</h2>
           <ul>
-            <li>Empathetic AI Chatbot for Guidance and Support            </li>
+            <li>Empathetic AI Chatbot for Guidance and Support</li>
             <li>Medical Staff Chat Page</li>
             <li>Stress-Relief Activities (VR/AR)</li>
             <li>Real-Time Health Statistics Sharing</li>
@@ -35,4 +35,4 @@ function App() {
   );
 }
 
-export default App;
+export default Landing;
