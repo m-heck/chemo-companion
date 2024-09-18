@@ -1,9 +1,19 @@
-/* General styling */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+:root {
+  --color-background: #f4f7fc;
+  --color-text: #032539;
+  --color-primary: #1C768F;
+  --color-secondary: #FA991C;
+  --color-footer: #032539;
+  --color-button-hover: #14596c;
+}
+
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f7fc;
-  color: #333;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 .App {
@@ -13,9 +23,8 @@ body {
   min-height: 100vh;
 }
 
-/* Header styling */
 .App-header {
-  background-color: #A7C7E7; /* Pastel blue */
+  background-color: var(--color-primary);
   color: white;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -34,7 +43,6 @@ body {
   margin-right: auto;
 }
 
-/* Main content */
 .App-main {
   flex: 1;
   padding: 2rem;
@@ -50,7 +58,7 @@ body {
 
 .features-section h2, .login-section h2 {
   font-size: 1.8rem;
-  color: #A7C7E7; /* Pastel blue */
+  color: var(--color-secondary);
   margin-bottom: 1rem;
 }
 
@@ -64,14 +72,13 @@ body {
   margin: 0.5rem 0;
 }
 
-/* Login button styling */
 .login-section p {
   font-size: 1.1rem;
   margin-bottom: 1rem;
 }
 
 .login-button {
-  background-color: #A7C7E7; /* Pastel blue */
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -82,13 +89,5 @@ body {
 }
 
 .login-button:hover {
-  background-color: #8bb2d6; /* Slightly darker pastel blue on hover */
-}
-
-/* Footer styling */
-.App-footer {
-  background-color: #333;
-  color: white;
-  padding: 1rem;
-  font-size: 0.9rem;
+  background-color: var(--color-button-hover);
 }

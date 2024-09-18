@@ -1,6 +1,7 @@
-import '../App/App.css';
+import './Landing.css';
+import Footer from '../Footer/Footer';
 
-function Landing() {
+function Landing({ onLoginClick }) {
   return (
     <div className="Landing">
       <header className="App-header">
@@ -8,29 +9,19 @@ function Landing() {
         <p>Your trusted companion through chemotherapy, offering support, guidance, and resources.</p>
       </header>
 
-      <main className="App-main">
-        <section className="features-section">
-          <h2>What’s Coming Soon</h2>
-          <ul>
-            <li>Empathetic AI Chatbot for Guidance and Support</li>
-            <li>Medical Staff Chat Page</li>
-            <li>Stress-Relief Activities (VR/AR)</li>
-            <li>Real-Time Health Statistics Sharing</li>
-            <li>Account Management Tools</li>
-            <li>Resource Library</li>
-          </ul>
+      <main className="Landing-main">
+        <section className="intro-section">
+          <h2>Introduction</h2>
+          <p>ChemoCompanion is designed to support chemotherapy patients by offering valuable resources and enabling smooth communication with their medical teams. We tackle current gaps by providing real-time health stats, an empathetic AI chatbot, emergency nurse connections, and stress-relief activities. Our goal is to reduce stress, improve care, and ensure privacy with HIPAA compliance. We offer tailored experiences for both patients and medical staff to make interactions efficient, secure, and supportive throughout the treatment process.</p>
         </section>
 
         <section className="login-section">
           <h2>Log in to Your Account</h2>
-          <p>Access your health stats, communicate with your medical team, and more.</p>
-          <button className="login-button">Login</button>
+          <button className="login-button" onClick={onLoginClick}>Login</button>
         </section>
       </main>
 
-      <footer className="App-footer">
-        <p>© 2024 ChemoCompanion - HIPAA Compliant Care for Chemotherapy Patients</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

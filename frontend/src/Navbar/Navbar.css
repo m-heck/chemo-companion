@@ -1,0 +1,56 @@
+.NavBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .NavBar .logo {
+    cursor: pointer;
+  }
+  
+  .NavBar .logo img {
+    height: 40px;
+  }
+  
+  .NavBar nav {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .NavBar .nav-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .NavBar .nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-secondary);
+  }
+  
+  .NavBar .sign-out-button {
+    background-color: var(--color-secondary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .NavBar .sign-out-button:hover {
+    background-color: #e78a00;
+  }
+  

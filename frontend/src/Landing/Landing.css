@@ -1,0 +1,46 @@
+:root {
+    --color-text: #333;
+    --color-primary: #1C768F;
+    --color-secondary: #FA991C;
+    --color-footer: #0F4C5C;
+    --color-button-hover: #14596c;
+  }
+  
+  .Landing {
+    font-family: Arial, sans-serif;
+    color: var(--color-text);
+  }
+  
+  .Landing-main {
+    padding: 2rem;
+  }
+  
+  .intro-section, .login-section {
+    margin-bottom: 2rem;
+  }
+  
+  .intro-section h2, .login-section h2 {
+    color: var(--color-secondary);
+    font-size: 2rem;
+  }
+  
+  .intro-section p, .login-section p {
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+  
+  button.login-button {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button.login-button:hover {
+    background-color: var(--color-button-hover);
+  }
+  
