@@ -2,7 +2,7 @@ import './Home.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 
-function Home({ onSignOut }) {
+function Home({ onSignOut, onChatbotClick }) {
   const handleSignOut = () => {
     onSignOut();
   };
@@ -13,7 +13,7 @@ function Home({ onSignOut }) {
 
   return (
     <div className="Home">
-      <NavBar onSignOut={handleSignOut} onLogoClick={handleLogoClick} />
+      <NavBar onSignOut={handleSignOut} onLogoClick={handleLogoClick} onChatbotClick={onChatbotClick} /> 
       <main className="Home-main">
         <section className="hero">
           <h1>Welcome to ChemoCompanion</h1>

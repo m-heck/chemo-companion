@@ -1,7 +1,8 @@
 import './App.css';
 import Landing from '../Landing/Landing';
 import Home from '../Home/Home';
-import Login from '../Login/Login'; // Import the Login component
+import Login from '../Login/Login';
+import Chatbot from '../Chatbot/Chatbot';
 import { useState } from 'react';
 
 function App() {
@@ -18,12 +19,17 @@ function App() {
   const handleSignOut = () => {
     setCurrentPage('landing');
   };
+  
+  const handleChatbotClick = () => {
+    setCurrentPage('chatbot');
+  };
 
   return (
     <div className="App">
-      {currentPage === 'home' && <Home onSignOut={handleSignOut} />}
+      {currentPage === 'home' && <Home onSignOut={handleSignOut} onChatbotClick={handleChatbotClick} />}
       {currentPage === 'login' && <Login onLoginSuccess={handleLoginSuccess} />}
       {currentPage === 'landing' && <Landing onLoginClick={handleLoginClick} />}
+      {currentPage === 'chatbot' && <Chatbot />}
     </div>
   );
 }

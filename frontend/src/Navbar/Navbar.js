@@ -2,7 +2,7 @@ import './Navbar.css';
 import logo from '../Navbar/logo.png';
 import { useState } from 'react';
 
-function NavBar({ onSignOut, onLogoClick }) {
+function NavBar({ onSignOut, onLogoClick, onChatbotClick }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleProfileClick = () => {
@@ -16,7 +16,7 @@ function NavBar({ onSignOut, onLogoClick }) {
       </div>
       <nav>
         <button className="nav-button">Home</button>
-        <button className="nav-button">AI Chatbot Page</button>
+        <button className="nav-button" onClick={onChatbotClick}>AI Chatbot Page</button>
         <button className="nav-button">Resources</button>
         <button className="nav-button">Provider Chat</button>
         <button className="nav-button">Patient Data</button>
