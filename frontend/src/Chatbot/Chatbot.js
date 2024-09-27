@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import './Chatbot.css';
+import React, { useState } from "react";
+import "./Chatbot.css";
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState("");
 
   const sendMessage = async () => {
     if (!userInput.trim()) return;
 
-    const newMessages = [...messages, { text: userInput, sender: 'user' }];
+    const newMessages = [...messages, { text: userInput, sender: "user" }];
     setMessages(newMessages);
-    setUserInput('');
+    setUserInput("");
 
     try {
-      const response = await fetch('/chat', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/chat", {
+        // Updated URL
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: userInput }),
       });
@@ -25,18 +26,18 @@ function Chatbot() {
         const data = await response.json();
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: data.reply, sender: 'bot' },
+          { text: data.reply, sender: "bot" },
         ]);
       } else {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: `Error: ${response.statusText}`, sender: 'bot' },
+          { text: `Error: ${response.statusText}`, sender: "bot" },
         ]);
       }
     } catch (error) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: `Error: ${error.message}`, sender: 'bot' },
+        { text: `Error: ${error.message}`, sender: "bot" },
       ]);
     }
   };

@@ -1,39 +1,43 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
-const config = require("./config"); // Make sure this file contains your OpenAI API key
-
+const cors = require("cors");
 const app = express();
-const port = 3000;
+const port = 3001;
 
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // This allows the server to parse JSON bodies
-app.use(express.static("public")); // Serves your HTML file if it’s in the 'public' folder
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("Chatbot API is running!"); // Simple response for the root URL
+});
 
 // Define the /chat POST route
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;  // Extracts the message from the request body
+    const { message } = req.body; // Extracts the message from the request body
 
     // Send the message to OpenAI API using Axios
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
-        model: "gpt-4o-mini",  // Replace with the correct model name
-        messages: [{ role: "user", content: message }],  // Passes the user message to the API
-        max_tokens: 150,  // Limits the response length
+        model: "gpt-4o-mini", // Ensure you are using the correct model
+        messages: [{ role: "user", content: message }],
+        max_tokens: 150,
       },
       {
         headers: {
-          Authorization: `Bearer ${config.apiKey}`,  // Passes the API key in the header
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Use your environment variable
           "Content-Type": "application/json",
         },
       }
     );
 
     // Extract the reply from the API response
-    const reply = response.data.choices && response.data.choices[0]?.message?.content?.trim();
+    const reply = response.data.choices[0]?.message?.content?.trim();
 
-    // Send the reply back to the client (frontend)
+    // Send the reply back to the client
     if (reply) {
       res.json({ reply });
     } else {
@@ -44,23 +48,13 @@ app.post("/chat", async (req, res) => {
     }
   } catch (error) {
     console.error("Error:", error.message);
-    if (error.response) {
-      console.error("Data:", error.response.data);
-      console.error("Status:", error.response.status);
-      console.error("Headers:", error.response.headers);
-    }
-
-    // Handle errors by sending a descriptive message to the client
     res
-      .status(error.response?.status || 500)
-      .json({
-        error: "Internal Server Error",
-        detailedMessage: error.message,
-      });
+      .status(500)
+      .json({ error: "Internal Server Error", detailedMessage: error.message });
   }
 });
 
-// Start the server on port 3000
+// Start the server on port 3001
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
