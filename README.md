@@ -52,3 +52,9 @@ The platform is designed with both patients and medical staff in mind. For patie
 
 ## Design
 [ChemoCompaion Wireframe.pdf](https://github.com/user-attachments/files/17047966/ChemoCompaion.Wireframe.pdf)
+
+
+## User Guide
+- '''npm install''' and '''npm install cors'' within "...\chemo-companion\backend\chatgpt-integration"
+- '''npm install''' within "...\chemo-companion\backend\chatgpt-integration"
+- Must have .env file within within "...\chemo-companion\backend\chatgpt-integration" OPENAI_API_KEY = "your api key here"
