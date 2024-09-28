@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import Footer from '../Footer/Footer';
 
-function Login({ onLoginSuccess }) {
+function Login({ onLoginSuccess, onSignupClick }) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const handleLogin = () => {
@@ -29,7 +29,7 @@ function Login({ onLoginSuccess }) {
         <button className="login-button" onClick={handleLogin}>Log In</button>
         <div className="options">
           <a href="#forgot-password" onClick={() => setModalOpen(true)} className="forgot-password">Forgot Password?</a>
-          <a href="#sign-up" className="new-user">New User? Sign Up</a>
+          <a href="#sign-up" onClick={onSignupClick} className="new-user">New User? Sign Up</a>
         </div>
       </main>
 
