@@ -35,8 +35,9 @@ Technologies: React, Express.js, SQLite, Netlify, Git, ChatGPT
     - An account management page
     - A resource library that links to helpful websites and other resources
 - Notification and alerting system - Patients will receive alerts from medical staff regarding important updates, as well as general website notifications.
-- ChatGPT integration - The platform will integrate with ChatGPT, allowing users to ask questions and receive AI-generated responses. Initial efforts will focus on prompt engineering to ensure accurate, relevant, and empathetic responses.
-    - Step 2: Train the AI chatbot on our own data to improve the accuracy of responses.
+- ChatGPT integration - The platform will integrate with ChatGPT, allowing users to ask questions and receive AI-generated responses. Initial efforts will focus on prompt engineering to ensure accurate, relevant, and empathetic responses. 
+    - Step 2: Train the AI chatbot on our own data to improve the accuracy of responses. Collect information from reliable APIs and 
+    utilize a webscraper to pull from renowned research articles. 
     - Step 3: Implement symptom image analysis, allowing patients to take pictures of physical symptoms for AI-based analysis, which will help determine the best course of action.
 
 ### Stretch Goals
