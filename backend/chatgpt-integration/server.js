@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const app = express();
 const port = 3001;
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // This allows the server to parse JSON bodies
-
+app.use(bodyParser.json);
 // Root route
 app.get("/", (req, res) => {
   res.send("Chatbot API is running!"); // Simple response for the root URL
@@ -53,6 +54,43 @@ app.post("/chat", async (req, res) => {
       .json({ error: "Internal Server Error", detailedMessage: error.message });
   }
 });
+
+
+
+app.post('/signup', (req, res) => {
+  const { firstName, lastName, email, password, userType } = req.body;
+
+  if (!firstName || !lastName || !email || !password || !userType) {
+      return res.status(400).send('All fields are required.');
+  }
+
+  const query = `INSERT INTO users (email, password)
+                 VALUES (?, ?)`;
+
+  db.run(query, [firstName, lastName, email, password, userType], function(err) {
+      if (err) {
+          if (err.message.includes('UNIQUE constraint failed')) {
+              return res.status(400).send('Email already exists.');
+          }
+          return res.status(500).send('Failed to add user.');
+      }
+      res.status(201).send('User added successfully.');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Start the server on port 3001
 app.listen(port, () => {
