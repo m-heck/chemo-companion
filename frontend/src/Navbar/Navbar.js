@@ -1,6 +1,7 @@
 import './Navbar.css';
 import logo from '../Navbar/logo.png';
 import { useState } from 'react';
+import Notification from '../Notification/Notification';
 
 function NavBar({ onSignOut, onLogoClick, onChatbotClick }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -20,6 +21,8 @@ function NavBar({ onSignOut, onLogoClick, onChatbotClick }) {
         <button className="nav-button">Resources</button>
         <button className="nav-button">Provider Chat</button>
         <button className="nav-button">Patient Data</button>
+
+        <Notification /> {}
 
         <div className="profile-section">
           <button className="profile-button" onClick={handleProfileClick}>Profile</button>

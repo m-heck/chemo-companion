@@ -21,7 +21,7 @@
 
 .intro {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .intro-title {
@@ -33,11 +33,12 @@
 .Login-main {
     width: 100%;
     max-width: 500px;
-    padding: 3rem;
+    padding: 3rem; 
     border-radius: 12px;
     background-color: white;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     text-align: left;
+    margin-top: 1rem;
 }
 
 .Login-main h2 {
@@ -48,7 +49,7 @@
 }
 
 .input-group {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .input-group label {
@@ -132,7 +133,7 @@
 .modal-input {
     width: 100%;
     padding: 0.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     border: 1px solid #ccc;
     border-radius: 8px;
 }
