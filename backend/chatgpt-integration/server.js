@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
+const cheerio = require("cheerio");
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const app = express();
@@ -8,89 +9,101 @@ const port = 3001;
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // This allows the server to parse JSON bodies
-app.use(bodyParser.json);
+app.use(bodyParser.json());
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Chatbot API is running!"); // Simple response for the root URL
 });
 
-// Define the /chat POST route
+// Mayo Clinic Scraper (Internal Processing Only)
+async function scrapeMayoClinic(query) {
+  try {
+    const url = `https://www.mayoclinic.org/search/search-results?q=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+
+    const mayoData = [];
+    $('.search-results-item').slice(0, 2).each((index, element) => {
+      const summary = $(element).find('.content p').text();
+      mayoData.push(summary.trim());
+    });
+
+    return mayoData.join(' '); // Return combined text as a useful summary
+  } catch (error) {
+    console.error("Error scraping Mayo Clinic:", error.message);
+    return '';
+  }
+}
+
+// American Cancer Society Scraper (Internal Processing Only)
+async function scrapeCancerSociety(query) {
+  try {
+    const url = `https://www.cancer.org/search.html?query=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+
+    const cancerData = [];
+    $('.search-results-item').slice(0, 2).each((index, element) => {
+      const summary = $(element).find('.result-body p').text();
+      cancerData.push(summary.trim());
+    });
+
+    return cancerData.join(' '); // Return combined text as a useful summary
+  } catch (error) {
+    console.error("Error scraping American Cancer Society:", error.message);
+    return '';
+  }
+}
+
+// Google Scholar Scraper (Internal Processing Only)
+async function scrapeGoogleScholar(query) {
+  try {
+    const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+
+    const scholarData = [];
+    $('.gs_ri').slice(0, 2).each((index, element) => {
+      const snippet = $(element).find('.gs_rs').text();
+      scholarData.push(snippet.trim());
+    });
+
+    return scholarData.join(' ');
+  } catch (error) {
+    console.error("Error scraping Google Scholar:", error.message);
+    return '';
+  }
+}
+
+// /chat POST route (User-Facing)
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body; // Extracts the message from the request body
 
-    // Send the message to OpenAI API using Axios
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini", // Ensure you are using the correct model
-        messages: [{ role: "user", content: message }],
-        max_tokens: 150,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Use your environment variable
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Fetch the summary from all sources
+    const [mayoSummary, cancerSummary, scholarSummary] = await Promise.all([
+      scrapeMayoClinic(message),
+      scrapeCancerSociety(message),
+      scrapeGoogleScholar(message)
+    ]);
 
-    // Extract the reply from the API response
-    const reply = response.data.choices[0]?.message?.content?.trim();
+    // Combine the information to form a helpful response
+    const combinedResponse = `
+      Here are some insights to help manage your symptoms and recognize critical issues after chemotherapy:
 
-    // Send the reply back to the client
-    if (reply) {
-      res.json({ reply });
-    } else {
-      res.status(500).json({
-        error: "No reply from the API",
-        detailedMessage: "OpenAI API did not return a valid response.",
-      });
-    }
+      - Mayo Clinic Insights: ${mayoSummary || 'No specific information found.'}
+      - Cancer Society Recommendations: ${cancerSummary || 'No specific information found.'}
+      - Research Highlights: ${scholarSummary || 'No specific information found.'}
+    `;
+
+    // Send the combined response back to the patient
+    res.json({ reply: combinedResponse.trim() });
   } catch (error) {
     console.error("Error:", error.message);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", detailedMessage: error.message });
+    res.status(500).json({ error: "Internal Server Error", detailedMessage: error.message });
   }
 });
-
-
-
-app.post('/signup', (req, res) => {
-  const { firstName, lastName, email, password, userType } = req.body;
-
-  if (!firstName || !lastName || !email || !password || !userType) {
-      return res.status(400).send('All fields are required.');
-  }
-
-  const query = `INSERT INTO users (email, password)
-                 VALUES (?, ?)`;
-
-  db.run(query, [firstName, lastName, email, password, userType], function(err) {
-      if (err) {
-          if (err.message.includes('UNIQUE constraint failed')) {
-              return res.status(400).send('Email already exists.');
-          }
-          return res.status(500).send('Failed to add user.');
-      }
-      res.status(201).send('User added successfully.');
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Start the server on port 3001
 app.listen(port, () => {
