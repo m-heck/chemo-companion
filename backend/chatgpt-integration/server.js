@@ -4,6 +4,9 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const bodyParser = require('body-parser');
 const cors = require("cors");
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
 const app = express();
 const port = 3001;
 
@@ -11,9 +14,45 @@ app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // This allows the server to parse JSON bodies
 app.use(bodyParser.json());
 
+
+const dbPath = path.resolve(__dirname, 'monkeydb.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Failed to connect to the database:', err.message);
+    } else {
+        console.log('Connected to the SQLite database.');
+    }
+    
+});
+
+
+
+
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Chatbot API is running!"); // Simple response for the root URL
+
+});
+
+app.post("/",(req,res) =>{
+  const {email,password} = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  const insertUser = 'INSERT INTO user (email, password) VALUES (?, ?)';
+  db.run(insertUser, [email, password], (err) => {
+    if (err) {
+      if(err.code === 'SQLITE_CONSTRAINT') {
+        return res.status(409).json({ message: 'Email already exists' });
+      }
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    return res.status(201).json({ message: 'User added successfully' });
+  });
+
 });
 
 // Mayo Clinic Scraper (Internal Processing Only)
