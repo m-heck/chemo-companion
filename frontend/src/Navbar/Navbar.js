@@ -1,9 +1,10 @@
 import './Navbar.css';
 import logo from '../Navbar/logo.png';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Notification from '../Notification/Notification';
 
-function NavBar({ onSignOut, onLogoClick, onChatbotClick }) {
+function NavBar({ onSignOut }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleProfileClick = () => {
@@ -12,17 +13,19 @@ function NavBar({ onSignOut, onLogoClick, onChatbotClick }) {
 
   return (
     <header className="NavBar">
-      <div className="logo" onClick={onLogoClick}>
-        <img src={logo} alt="ChemoCompanion Logo" />
+      <div className="logo">
+        <Link to="/home">
+          <img src={logo} alt="ChemoCompanion Logo" />
+        </Link>
       </div>
       <nav>
-        <button className="nav-button">Home</button>
-        <button className="nav-button" onClick={onChatbotClick}>AI Chatbot Page</button>
+        <Link to="/home" className="nav-button">Home</Link>
+        <Link to="/chatbot" className="nav-button">AI Chatbot Page</Link>
         <button className="nav-button">Resources</button>
         <button className="nav-button">Provider Chat</button>
         <button className="nav-button">Patient Data</button>
 
-        <Notification /> {}
+        <Notification />
 
         <div className="profile-section">
           <button className="profile-button" onClick={handleProfileClick}>Profile</button>

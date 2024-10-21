@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import './Login.css';
 import Footer from '../Footer/Footer';
+import { useNavigate } from 'react-router-dom';
 
-function Login({ onLoginSuccess, onSignupClick }) {
+function Login() {
+  const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleLogin = () => {
-    onLoginSuccess();
+  const handleLoginSuccess = () => {
+    navigate('/home');
   };
-
+  
   return (
     <div className="Login">
       <div className="intro">
@@ -26,10 +28,10 @@ function Login({ onLoginSuccess, onSignupClick }) {
           <label htmlFor="password">Password</label>
           <input type="password" id="password" required placeholder="••••••••" />
         </div>
-        <button className="login-button" onClick={handleLogin}>Log In</button>
+        <button className="login-button" onClick={handleLoginSuccess}>Log In</button>
         <div className="options">
           <a href="#forgot-password" onClick={() => setModalOpen(true)} className="forgot-password">Forgot Password?</a>
-          <a href="#sign-up" onClick={onSignupClick} className="new-user">New User? Sign Up</a>
+          <a href="#sign-up" onClick={() => navigate('/signup')} className="new-user">New User? Sign Up</a>
         </div>
       </main>
 
