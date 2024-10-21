@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 import './Login.css';
 import Footer from '../Footer/Footer';
 
@@ -7,17 +8,19 @@ function Login({ onLoginSuccess, onSignupClick }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleLogin = () => {
-    console.log("Email: ");
-    axios.post('http://localhost:3001',{email,password})
-    .then(response => {
-      console.error('winner maybe');
-    })
-    .catch(error => {
-      console.error('There was an error!');
-    });
-    onLoginSuccess();
+    console.log("Email: ", email);
+    axios.post('http://localhost:3001', { email, password })
+      .then(response => {
+        console.error('winner maybe');
+        navigate('/home');
+        onLoginSuccess();
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
   };
 
   return (
@@ -32,14 +35,16 @@ function Login({ onLoginSuccess, onSignupClick }) {
         <div className="input-group">
           <label htmlFor="email">Email</label>
           <input type="email" id="email" required 
-                        value={email}  // Controlled input for email
-                        onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@example.com" />
+                 value={email} // Controlled input for email
+                 onChange={(e) => setEmail(e.target.value)}
+                 placeholder="email@example.com" />
         </div>
         <div className="input-group">
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" required value={password}  // Controlled input for password
-            onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+          <input type="password" id="password" required 
+                 value={password} // Controlled input for password
+                 onChange={(e) => setPassword(e.target.value)} 
+                 placeholder="••••••••" />
         </div>
         <button className="login-button" onClick={handleLogin}>Log In</button>
         <div className="options">

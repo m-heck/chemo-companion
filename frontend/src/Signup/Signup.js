@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Signup.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function Signup({ onSignupSuccess }) {
   const [firstName, setFirstName] = useState('');
@@ -7,10 +9,11 @@ function Signup({ onSignupSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('patient'); 
+  
+  const navigate = useNavigate();
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    onSignupSuccess(); 
+  const handleSignupSuccess = () => {
+    navigate('/home');
   };
 
   return (
@@ -22,7 +25,7 @@ function Signup({ onSignupSuccess }) {
 
       <main className="Signup-main">
         <h2>Sign Up</h2>
-        <form onSubmit={handleSignup}>
+        <form onSubmit={handleSignupSuccess}>
           <div className="input-group">
             <label htmlFor="first-name">First Name</label>
             <input
