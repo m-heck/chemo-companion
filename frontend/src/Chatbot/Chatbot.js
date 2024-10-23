@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./Chatbot.css";
+import NavBar from '../Navbar/Navbar';
+import Footer from '../Footer/Footer';
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
@@ -14,7 +16,6 @@ function Chatbot() {
 
     try {
       const response = await fetch("http://localhost:3001/chat", {
-        // Updated URL
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,24 +44,28 @@ function Chatbot() {
   };
 
   return (
-    <div className="chatbot-container">
-      <h1>Chat with ChemoCompanion</h1>
-      <div className="chatbox">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender}`}>
-            {msg.text}
-          </div>
-        ))}
-      </div>
-      <div className="input-container">
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Type your message here..."
-        />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+    <div className="Chatbot">
+      <NavBar />  {}
+      <main className="Chatbot-main">
+        <h1>Chat with ChemoCompanion</h1>
+        <div className="chatbox">
+          {messages.map((msg, index) => (
+            <div key={index} className={`message ${msg.sender}`}>
+              {msg.text}
+            </div>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Type your message here..."
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
+      </main>
+      <Footer />  {}
     </div>
   );
 }

@@ -3,12 +3,19 @@ import logo from '../Navbar/logo.png';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Notification from '../Notification/Notification';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar({ onSignOut }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
+  };
+
+  const navigate = useNavigate();
+
+  const handleSignOutClick = () => {
+    navigate('/');
   };
 
   return (
@@ -33,7 +40,7 @@ function NavBar({ onSignOut }) {
             <div className="profile-dropdown">
               <button className="dropdown-item">Account Management</button>
               <button className="dropdown-item">Settings</button>
-              <button className="dropdown-item" onClick={onSignOut}>Sign Out</button>
+              <button className="dropdown-item" onClick={handleSignOutClick}>Sign Out</button>
             </div>
           )}
         </div>
