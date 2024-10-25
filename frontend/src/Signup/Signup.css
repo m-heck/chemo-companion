@@ -17,6 +17,7 @@
     height: 100vh;
     padding: 2rem;
     background-color: var(--color-background);
+    margin-bottom: 5rem;
 }
 
 .intro {

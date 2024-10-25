@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Signup.css';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Footer/Footer';
 
 
 function Signup({ onSignupSuccess }) {
@@ -100,6 +101,7 @@ function Signup({ onSignupSuccess }) {
           <button type="submit" className="signup-button">Sign Up</button>
         </form>
       </main>
+      <Footer />
     </div>
   );
 }
