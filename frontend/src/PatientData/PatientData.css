@@ -1,0 +1,85 @@
+.patient-data-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px; /* Increased padding for a more spacious layout */
+    font-family: 'Montserrat', sans-serif;
+    color: #032539;
+    background-color: #f9f9f9; /* Light background for contrast */
+}
+
+.patient-data-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px; /* Increased max width for a more spacious layout */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Slightly darker shadow for depth */
+    padding: 30px; /* Increased padding for a more balanced look */
+    margin-top: 20px;
+}
+
+.data-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Increased space between sections */
+}
+
+.data-section label {
+    font-weight: bold;
+    color: #1C768F;
+    margin-bottom: 8px; /* Increased space below labels */
+    text-align: left; /* Left align the label text */
+}
+
+.data-section input,
+.data-section textarea {
+    padding: 12px; /* Increased padding for input fields */
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Slightly rounded corners */
+    font-family: 'Montserrat', sans-serif;
+    width: 100%; /* Ensure inputs take full width */
+    font-size: 16px; /* Larger font for better readability */
+}
+
+.data-section input[type="checkbox"] {
+    width: auto; /* Keep checkbox width small */
+    margin-left: 5px; /* Small left margin for checkbox */
+}
+
+.data-section textarea {
+    resize: vertical; /* Allow users to resize vertically */
+}
+
+.save-button {
+    padding: 12px 20px; /* Increased padding for a more substantial button */
+    background-color: #FA991C;
+    color: white;
+    border: none;
+    border-radius: 6px; /* Slightly rounded corners */
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.3s, transform 0.2s; /* Added transform for button effect */
+    margin-top: 20px; /* Increased space above the button */
+    font-size: 16px; /* Larger font for the button */
+}
+
+.save-button:hover {
+    background-color: #032539;
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* New styles for the paragraph */
+.patient-data-main p {
+    margin-bottom: 20px; /* Add spacing below the paragraph */
+    text-align: center; /* Center align the paragraph text */
+    font-size: 18px; /* Slightly larger font for better readability */
+}
+
+/* Added padding for the form */
+.patient-data-container form {
+    padding: 20px; /* Add padding to the form */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack inputs vertically */
+}

@@ -5,6 +5,7 @@ import Login from '../Login/Login';
 import Signup from '../Signup/Signup'; 
 import Chatbot from '../Chatbot/Chatbot';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HealthDataForm from '../PatientData/PatientData';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
           <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/patient-data" element={<HealthDataForm />} />
         </Routes>
       </div>
     </Router>

@@ -30,7 +30,7 @@ function NavBar({ onSignOut }) {
         <Link to="/chatbot" className="nav-button">AI Chatbot Page</Link>
         <button className="nav-button">Resources</button>
         <button className="nav-button">Provider Chat</button>
-        <button className="nav-button">Patient Data</button>
+        <Link to="/patient-data" className="nav-button">Patient Data</Link>
 
         <Notification />
 
