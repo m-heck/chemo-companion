@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
@@ -10,11 +10,11 @@ const path = require('path');
 const app = express();
 const port = 3001;
 
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // This allows the server to parse JSON bodies
+app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 
-
+// Database setup
 const dbPath = path.resolve(__dirname, 'monkeydb.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -22,21 +22,15 @@ const db = new sqlite3.Database(dbPath, (err) => {
     } else {
         console.log('Connected to the SQLite database.');
     }
-    
 });
-
-
-
-
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("Chatbot API is running!"); // Simple response for the root URL
-
+  res.send("Chatbot API is running!");
 });
 
-app.post("/",(req,res) =>{
-  const {email,password} = req.body;
+app.post("/", (req, res) => {
+  const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -44,7 +38,7 @@ app.post("/",(req,res) =>{
   const insertUser = 'INSERT INTO user (email, password) VALUES (?, ?)';
   db.run(insertUser, [email, password], (err) => {
     if (err) {
-      if(err.code === 'SQLITE_CONSTRAINT') {
+      if (err.code === 'SQLITE_CONSTRAINT') {
         return res.status(409).json({ message: 'Email already exists' });
       }
       console.error('Database error:', err);
@@ -52,30 +46,55 @@ app.post("/",(req,res) =>{
     }
     return res.status(201).json({ message: 'User added successfully' });
   });
-
 });
 
-// Mayo Clinic Scraper (Internal Processing Only)
-async function scrapeMayoClinic(query) {
+async function scrapeMayoClinic(message) {
+  console.log("Scraping Mayo Clinic with message:", message);
   try {
-    const url = `https://www.mayoclinic.org/search/search-results?q=${encodeURIComponent(query)}`;
-    const { data } = await axios.get(url);
-    const $ = cheerio.load(data);
-
-    const mayoData = [];
-    $('.search-results-item').slice(0, 2).each((index, element) => {
-      const summary = $(element).find('.content p').text();
-      mayoData.push(summary.trim());
+    const response = await axios.get(`https://www.mayoclinic.org/search/search-results?q=${encodeURIComponent(message)}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
+      }
     });
+    const $ = cheerio.load(response.data);
 
-    return mayoData.join(' '); // Return combined text as a useful summary
+    // Extract the first search result
+    const bestResult = $('.azsearchlink').first();
+    const title = bestResult.text().trim();
+    const link = bestResult.attr('href');
+
+    if (!link) {
+      console.error("No link found for the best result.");
+      return 'No specific information found.';
+    }
+
+    const fullLink = link.startsWith('http') ? link : `https://www.mayoclinic.org${link}`;
+
+    // Visit the article link to scrape content
+    const articleResponse = await axios.get(fullLink, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
+      }
+    });
+    const articlePage = cheerio.load(articleResponse.data);
+
+    // Extract the main content from the article page
+    let summary = articlePage('.content').text().trim();
+
+    // Clean up the extracted text
+    summary = summary.replace(/\s+/g, ' ').slice(0, 500); // Replace multiple whitespace with a single space and limit to 500 characters
+
+    console.log("Mayo Clinic title:", title);
+    console.log("Mayo Clinic summary:", summary);
+
+    return `Title: ${title}\nSummary: ${summary}`;
   } catch (error) {
     console.error("Error scraping Mayo Clinic:", error.message);
-    return '';
+    return 'Unable to retrieve information.';
   }
 }
 
-// American Cancer Society Scraper (Internal Processing Only)
+// American Cancer Society Scraper
 async function scrapeCancerSociety(query) {
   try {
     const url = `https://www.cancer.org/search.html?query=${encodeURIComponent(query)}`;
@@ -83,19 +102,23 @@ async function scrapeCancerSociety(query) {
     const $ = cheerio.load(data);
 
     const cancerData = [];
-    $('.search-results-item').slice(0, 2).each((index, element) => {
-      const summary = $(element).find('.result-body p').text();
-      cancerData.push(summary.trim());
+    // Updated selectors based on the structure of the American Cancer Society website
+    $('.search-result').each((index, element) => {
+      const title = $(element).find('a').text().trim();
+      const summary = $(element).find('.result-body p').text().trim();
+      if (title && summary) {
+        cancerData.push(`${title}: ${summary}`);
+      }
     });
 
-    return cancerData.join(' '); // Return combined text as a useful summary
+    return cancerData.join(' ') || 'No specific information found.';
   } catch (error) {
     console.error("Error scraping American Cancer Society:", error.message);
-    return '';
+    return 'Unable to retrieve information.';
   }
 }
 
-// Google Scholar Scraper (Internal Processing Only)
+// Google Scholar Scraper
 async function scrapeGoogleScholar(query) {
   try {
     const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
@@ -108,43 +131,80 @@ async function scrapeGoogleScholar(query) {
       scholarData.push(snippet.trim());
     });
 
-    return scholarData.join(' ');
+    return scholarData.join(' ') || 'No specific information found.';
   } catch (error) {
     console.error("Error scraping Google Scholar:", error.message);
-    return '';
+    return 'Unable to retrieve information.';
   }
 }
 
-// /chat POST route (User-Facing)
+async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummary) {
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: "You are a helpful assistant providing advice based on medical and research summaries."
+      },
+      {
+        role: "user",
+        content: `
+          Based on the following information, provide a personalized and condensed summary of advice for a patient that just got out of chemotherapy:
+          
+          - Mayo Clinic Insights: ${mayoSummary}
+          - Cancer Society Recommendations: ${cancerSummary}
+          - Research Highlights: ${scholarSummary}
+          
+          Please offer the best advice and recommendations for the user based on the above information while being human and professional.
+          Make sure that the response is complete and under 200 tokens.
+        `
+      },
+    ];
+
+    const response = await axios.post("https://api.openai.com/v1/chat/completions", {
+      model: "gpt-4o-mini", // Ensure this model is available for your account
+      messages: messages,
+      max_tokens: 200,
+      temperature: 0.5
+    }, {
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    return response.data.choices[0].message.content.trim();
+  } catch (error) {
+    console.error("Error generating ChatGPT response:", error.message);
+    return 'Unable to generate a personalized response at this time.';
+  }
+}
+
+// /chat POST route
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body; // Extracts the message from the request body
+    const { message } = req.body;
 
-    // Fetch the summary from all sources
     const [mayoSummary, cancerSummary, scholarSummary] = await Promise.all([
       scrapeMayoClinic(message),
       scrapeCancerSociety(message),
       scrapeGoogleScholar(message)
     ]);
 
-    // Combine the information to form a helpful response
-    const combinedResponse = `
-      Here are some insights to help manage your symptoms and recognize critical issues after chemotherapy:
+    // Print summaries to the terminal
+    //console.log("Mayo Clinic Summary:", mayoSummary);
+    console.log("Cancer Society Summary:", cancerSummary);
+    console.log("Google Scholar Summary:", scholarSummary);
 
-      - Mayo Clinic Insights: ${mayoSummary || 'No specific information found.'}
-      - Cancer Society Recommendations: ${cancerSummary || 'No specific information found.'}
-      - Research Highlights: ${scholarSummary || 'No specific information found.'}
-    `;
+    const personalizedAdvice = await generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummary);
 
-    // Send the combined response back to the patient
-    res.json({ reply: combinedResponse.trim() });
+    res.json({ reply: personalizedAdvice });
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ error: "Internal Server Error", detailedMessage: error.message });
   }
 });
 
-// Start the server on port 3001
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
