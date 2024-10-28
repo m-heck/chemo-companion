@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Signup.css';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Footer/Footer';
+import axios from 'axios';
 
 
 function Signup({ onSignupSuccess }) {
@@ -14,7 +15,15 @@ function Signup({ onSignupSuccess }) {
   const navigate = useNavigate();
 
   const handleSignupSuccess = () => {
-    navigate('/home');
+    axios.post('http://localhost:3001/signup', {firstName, lastName, email, password, userType})
+      .then(response => {
+        console.log('winner maybe')
+        navigate('/home');
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+        return;
+      });
   };
 
   return (

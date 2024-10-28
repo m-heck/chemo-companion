@@ -16,7 +16,7 @@ function Login({ onLoginSuccess, onSignupClick }) {
       .then(response => {
         console.error('winner maybe');
         navigate('/home');
-        onLoginSuccess();
+        
       })
       .catch(error => {
         console.error('There was an error!', error);

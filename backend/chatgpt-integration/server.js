@@ -30,15 +30,20 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
-  }
 
-  const insertUser = 'INSERT INTO user (email, password) VALUES (?, ?)';
-  db.run(insertUser, [email, password], (err) => {
+});
+
+app.get("/singup", (req, res) => {
+  
+});
+app.post("/signup",(req,res) =>{
+  const {firstName, lastName, email, password, userType} = req.body;
+
+
+  const insertUser = 'INSERT INTO users (firstName, secondName, email, password, userType) VALUES (?, ?, ?, ?, ?)';
+  db.run(insertUser, [firstName, lastName, email, password, userType], (err) => {
     if (err) {
-      if (err.code === 'SQLITE_CONSTRAINT') {
+      if(err.code === 'SQLITE_CONSTRAINT') {
         return res.status(409).json({ message: 'Email already exists' });
       }
       console.error('Database error:', err);
@@ -46,7 +51,14 @@ app.post("/", (req, res) => {
     }
     return res.status(201).json({ message: 'User added successfully' });
   });
+
 });
+
+
+
+
+
+
 
 async function scrapeMayoClinic(message) {
   console.log("Scraping Mayo Clinic with message:", message);
