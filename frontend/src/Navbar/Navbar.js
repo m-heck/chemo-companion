@@ -38,7 +38,7 @@ function NavBar({ onSignOut }) {
           <button className="profile-button" onClick={handleProfileClick}>Profile</button>
           {isProfileOpen && (
             <div className="profile-dropdown">
-              <button className="dropdown-item">Account Management</button>
+              <Link to="/account" className="dropdown-item">Account Management</Link>
               <button className="dropdown-item">Settings</button>
               <button className="dropdown-item" onClick={handleSignOutClick}>Sign Out</button>
             </div>
