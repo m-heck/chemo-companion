@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import Footer from '../Footer/Footer';
 
-function Login({ onLoginSuccess, onSignupClick }) {
+function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
@@ -14,13 +14,17 @@ function Login({ onLoginSuccess, onSignupClick }) {
     console.log("Email: ", email);
     axios.post('http://localhost:3001', { email, password })
       .then(response => {
-        console.error('winner maybe');
+        console.log('Login successful');
         navigate('/home');
         
       })
       .catch(error => {
         console.error('There was an error!', error);
       });
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
   };
 
   return (
@@ -34,22 +38,30 @@ function Login({ onLoginSuccess, onSignupClick }) {
         <h2>Log In</h2>
         <div className="input-group">
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" required 
-                 value={email} // Controlled input for email
-                 onChange={(e) => setEmail(e.target.value)}
-                 placeholder="email@example.com" />
+          <input 
+            type="email" 
+            id="email" 
+            required 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="email@example.com" 
+          />
         </div>
         <div className="input-group">
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" required 
-                 value={password} // Controlled input for password
-                 onChange={(e) => setPassword(e.target.value)} 
-                 placeholder="••••••••" />
+          <input 
+            type="password" 
+            id="password" 
+            required 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} 
+            placeholder="••••••••" 
+          />
         </div>
         <button className="login-button" onClick={handleLogin}>Log In</button>
         <div className="options">
           <a href="#forgot-password" onClick={() => setModalOpen(true)} className="forgot-password">Forgot Password?</a>
-          <a href="#sign-up" onClick={onSignupClick} className="new-user">New User? Sign Up</a>
+          <a href="#sign-up" onClick={handleSignupClick} className="new-user">New User? Sign Up</a>
         </div>
       </main>
 
