@@ -9,9 +9,10 @@ import PatientData from '../PatientData/PatientData';
 import Account from '../Account/Account';
 import Resources from '../Resources/Resources';
 import { useState } from 'react';
+import HealthcareHome from '../Home/HealthcareHome';
 
 function App() {
-  const [isEditMode, setEditMode] = useState(false); // Define state for edit mode
+  const [isEditMode, setEditMode] = useState(false);
 
   return (
     <Router>
@@ -32,6 +33,7 @@ function App() {
           />
           <Route path="/account" element={<Account />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/healthcare-home" element={<HealthcareHome />} />
         </Routes>
       </div>
     </Router>

@@ -1,0 +1,30 @@
+.HealthcareHome {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-background);
+  }
+  
+  .HealthcareHome-main {
+    flex: 1;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .patient-widgets {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
