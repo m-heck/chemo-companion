@@ -10,6 +10,7 @@ import Account from '../Account/Account';
 import Resources from '../Resources/Resources';
 import { useState } from 'react';
 import HealthcareHome from '../Home/HealthcareHome';
+import CreateNotification from '../CreateNotification/CreateNotification';
 
 function App() {
   const [isEditMode, setEditMode] = useState(false);
@@ -34,7 +35,8 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/healthcare-home" element={<HealthcareHome />} />
-        </Routes>
+          <Route path="/create-notification" element={<CreateNotification />} />
+          </Routes>
       </div>
     </Router>
   );

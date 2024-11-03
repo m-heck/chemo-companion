@@ -5,6 +5,9 @@
   background-color: var(--color-primary);
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ensure full width */
+  position: relative; /* Add relative positioning */
+  z-index: 1000; /* Keep it above other content */
 }
 
 .NavBar .logo {
@@ -72,7 +75,6 @@
   padding: 0.5rem 1rem;
   transition: background-color 0.3s, color 0.3s;
 }
-
 
 .profile-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
