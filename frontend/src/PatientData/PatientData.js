@@ -3,23 +3,21 @@ import './PatientData.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 
-function PatientData() {
+function PatientData({ isEditMode, setEditMode }) {
   const [formData, setFormData] = useState({
-    name: 'John Doe',
-    birthday: '1990-01-01',
-    gender: 'Male',
-    emergencyContact: 'Jane Doe - 123-456-7890',
-    cancerTypeStage: 'Stage II',
-    treatmentPlan: 'Chemotherapy',
-    allergies: 'None',
-    comorbidities: 'None',
-    doctorInfo: 'Dr. Smith',
-    medications: 'Medication A, Medication B',
+    name: '',
+    birthday: '',
+    gender: '',
+    emergencyContact: '',
+    cancerTypeStage: '',
+    treatmentPlan: '',
+    allergies: '',
+    comorbidities: '',
+    doctorInfo: '',
+    medications: '',
     aiAcknowledgement: false,
     consentAcknowledgement: false,
   });
-
-  const [isEditing, setIsEditing] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -31,60 +29,47 @@ function PatientData() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
-    setIsEditing(false); // Exit edit mode after submission
+    if (!formData.aiAcknowledgement) {
+      alert('You must acknowledge the AI chatbot.');
+      return;
+    }
+    if (!formData.consentAcknowledgement) {
+      alert('You must consent to share information.');
+      return;
+    }
+    setEditMode(false); // Switch to display mode
   };
 
   return (
     <div className="PatientData">
-      <NavBar /> {/* Navbar at the top */}
-      
+      <NavBar />
       <main className="patient-data-main">
-        <h1 style={{ textAlign: 'left' }}>Health Data Form</h1>
-        <p style={{ textAlign: 'left' }}>Manage and view your health data securely in one place.</p>
-        
-        {!isEditing ? (
-          <div className="patient-summary">
-            <h2>Current Patient Data</h2>
-            <ul>
-              <li><strong>Name:</strong> {formData.name}</li>
-              <li><strong>Birthday:</strong> {formData.birthday}</li>
-              <li><strong>Gender:</strong> {formData.gender}</li>
-              <li><strong>Emergency Contact:</strong> {formData.emergencyContact}</li>
-              <li><strong>Cancer Type and Stage:</strong> {formData.cancerTypeStage}</li>
-              <li><strong>Current Treatment Plan:</strong> {formData.treatmentPlan}</li>
-              <li><strong>Allergies:</strong> {formData.allergies}</li>
-              <li><strong>Comorbidities:</strong> {formData.comorbidities}</li>
-              <li><strong>Doctor Information:</strong> {formData.doctorInfo}</li>
-              <li><strong>Medications:</strong> {formData.medications}</li>
-            </ul>
-            <button onClick={() => setIsEditing(true)} className="edit-button">Edit Data</button>
-          </div>
-        ) : (
+        <h1>{isEditMode ? 'Edit Your Health Data' : 'Your Health Data'}</h1>
+        {isEditMode ? (
           <form onSubmit={handleSubmit} className="patient-data-container">
             <label>
-              Name
+              Name <span className="required">*</span>
               <input type="text" name="name" value={formData.name} onChange={handleChange} required />
             </label>
             <label>
-              Birthday
+              Birthday <span className="required">*</span>
               <input type="date" name="birthday" value={formData.birthday} onChange={handleChange} required />
             </label>
             <label>
-              Gender
-              <input type="text" name="gender" value={formData.gender} onChange={handleChange} />
+              Gender <span className="required">*</span>
+              <input type="text" name="gender" value={formData.gender} onChange={handleChange} required />
             </label>
             <label>
-              Emergency Contact
-              <input type="text" name="emergencyContact" value={formData.emergencyContact} onChange={handleChange} />
+              Emergency Contact <span className="required">*</span>
+              <input type="text" name="emergencyContact" value={formData.emergencyContact} onChange={handleChange} required />
             </label>
             <label>
-              Cancer Type and Stage
-              <input type="text" name="cancerTypeStage" value={formData.cancerTypeStage} onChange={handleChange} />
+              Cancer Type and Stage <span className="required">*</span>
+              <input type="text" name="cancerTypeStage" value={formData.cancerTypeStage} onChange={handleChange} required />
             </label>
             <label>
-              Current Treatment Plan
-              <input type="text" name="treatmentPlan" value={formData.treatmentPlan} onChange={handleChange} />
+              Current Treatment Plan <span className="required">*</span>
+              <input type="text" name="treatmentPlan" value={formData.treatmentPlan} onChange={handleChange} required />
             </label>
             <label>
               Allergies
@@ -103,18 +88,33 @@ function PatientData() {
               <textarea name="medications" value={formData.medications} onChange={handleChange} />
             </label>
             <label>
-              AI Chatbot Acknowledgement
-              <input type="checkbox" name="aiAcknowledgement" checked={formData.aiAcknowledgement} onChange={handleChange} />
+              AI Chatbot Acknowledgement <span className="required">*</span>
+              <input type="checkbox" name="aiAcknowledgement" checked={formData.aiAcknowledgement} onChange={handleChange} required />
             </label>
             <label>
-              Consent to Share Information Acknowledgement
-              <input type="checkbox" name="consentAcknowledgement" checked={formData.consentAcknowledgement} onChange={handleChange} />
+              Consent to Share Information Acknowledgement <span className="required">*</span>
+              <input type="checkbox" name="consentAcknowledgement" checked={formData.consentAcknowledgement} onChange={handleChange} required />
             </label>
-            <button type="submit" className="save-button">Submit</button>
+            <button type="submit" className="save-button">Save</button>
           </form>
+        ) : (
+          <div className="patient-data-display">
+            <div className="data-item"><strong>Name:</strong> {formData.name}</div>
+            <div className="data-item"><strong>Birthday:</strong> {formData.birthday}</div>
+            <div className="data-item"><strong>Gender:</strong> {formData.gender}</div>
+            <div className="data-item"><strong>Emergency Contact:</strong> {formData.emergencyContact}</div>
+            <div className="data-item"><strong>Cancer Type and Stage:</strong> {formData.cancerTypeStage}</div>
+            <div className="data-item"><strong>Current Treatment Plan:</strong> {formData.treatmentPlan}</div>
+            <div className="data-item"><strong>Allergies:</strong> {formData.allergies}</div>
+            <div className="data-item"><strong>Comorbidities:</strong> {formData.comorbidities}</div>
+            <div className="data-item"><strong>Doctor Information:</strong> {formData.doctorInfo}</div>
+            <div className="data-item"><strong>Medications:</strong> {formData.medications}</div>
+            <div className="data-item"><strong>AI Chatbot Acknowledgement:</strong> {formData.aiAcknowledgement ? 'Yes' : 'No'}</div>
+            <div className="data-item"><strong>Consent to Share Information Acknowledgement:</strong> {formData.consentAcknowledgement ? 'Yes' : 'No'}</div>
+            <button onClick={() => setEditMode(true)} className="edit-button">Edit</button>
+          </div>
         )}
       </main>
-      
       <Footer />
     </div>
   );

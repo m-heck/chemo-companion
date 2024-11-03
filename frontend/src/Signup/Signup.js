@@ -14,17 +14,26 @@ function Signup({ onSignupSuccess }) {
   
   const navigate = useNavigate();
 
-  const handleSignupSuccess = () => {
-    axios.post('http://localhost:3001/signup', {firstName, lastName, email, password, userType})
-      .then(response => {
-        console.log('winner maybe')
-        navigate('/home');
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-        return;
-      });
+  const handleSignupSuccess = (e) => {
+    e.preventDefault();
+    // Simulating a successful signup without actual backend call
+    console.log('Signup successful (mock)');
+    navigate('/patient-data/edit'); // Navigate to the Patient Data page
   };
+
+  /* TODO: remove once backend is working
+const handleSignupSuccess = (e) => {
+  e.preventDefault();
+  axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType })
+    .then(response => {
+      console.log('Signup successful');
+      // Navigate to the edit version of patient data page
+      navigate('/patient-data/edit');
+    })
+    .catch(error => {
+      console.error('There was an error!', error);
+    });
+};*/
 
   return (
     <div className="Signup">
