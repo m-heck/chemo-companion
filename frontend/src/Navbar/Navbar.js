@@ -28,8 +28,7 @@ function NavBar({ onSignOut }) {
       <nav>
         <Link to="/home" className="nav-button">Home</Link>
         <Link to="/chatbot" className="nav-button">AI Chatbot Page</Link>
-        <button className="nav-button">Resources</button>
-        <button className="nav-button">Provider Chat</button>
+        <Link to="/resources" className="nav-button">Resources</Link>
         <Link to="/patient-data" className="nav-button">Patient Data</Link>
 
         <Notification />
@@ -39,7 +38,6 @@ function NavBar({ onSignOut }) {
           {isProfileOpen && (
             <div className="profile-dropdown">
               <Link to="/account" className="dropdown-item">Account Management</Link>
-              <button className="dropdown-item">Settings</button>
               <button className="dropdown-item" onClick={handleSignOutClick}>Sign Out</button>
             </div>
           )}
