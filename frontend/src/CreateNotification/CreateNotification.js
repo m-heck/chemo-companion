@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './CreateNotification.css';
-import NavBar from '../Navbar/Navbar';
+import HealthcareNavbar from '../Navbar/HealthcareNavbar'; 
 import Footer from '../Footer/Footer';
 
 function CreateNotification() {
@@ -18,7 +18,7 @@ function CreateNotification() {
 
   return (
     <div className="create-notification-page">
-      <NavBar />
+      <HealthcareNavbar />
       <div className="create-notification-container">
         <h1>Create New Notification</h1>
         <form onSubmit={handleSubmit}>

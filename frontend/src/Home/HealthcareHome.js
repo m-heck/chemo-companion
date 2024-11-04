@@ -1,6 +1,6 @@
 import React from 'react';
 import './HealthcareHome.css';
-import NavBar from '../Navbar/Navbar';
+import HealthcareNavbar from '../Navbar/HealthcareNavbar'; 
 import Footer from '../Footer/Footer';
 import PatientWidget from './PatientWidget';
 
@@ -12,7 +12,7 @@ const mockPatients = [
 function HealthcareHome() {
   return (
     <div className="HealthcareHome">
-      <NavBar />
+      <HealthcareNavbar />
       <main className="HealthcareHome-main">
         <h1>Healthcare Provider Dashboard</h1>
         {mockPatients.map(patient => (

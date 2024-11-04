@@ -1,5 +1,5 @@
 import './Navbar.css';
-import logo from '../Navbar/logo.png';
+import logo from '../Navbar/logo.png'; 
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Notification from '../Notification/Notification';
@@ -21,17 +21,14 @@ function HealthcareNavBar({ onSignOut }) {
   return (
     <header className="NavBar">
       <div className="logo">
-        <Link to="/provider">
+        <Link to="/healthcare-home">
           <img src={logo} alt="ChemoCompanion Logo" />
         </Link>
       </div>
       <nav>
-        <Link to="/provider" className="nav-button">Healthcare Home</Link>
-        <Link to="/provider/send-notification" className="nav-button">Create Notifications</Link>
-        <Link to="/chatbot" className="nav-button">AI Chatbot Page</Link>
-
-        <Notification />
-
+        <Link to="/healthcare-home" className="nav-button">Healthcare Home</Link>
+        <Link to="/create-notification" className="nav-button">Create Notifications</Link>
+        
         <div className="profile-section">
           <button className="profile-button" onClick={handleProfileClick}>Profile</button>
           {isProfileOpen && (
