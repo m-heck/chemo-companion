@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Database setup
-const dbPath = path.resolve(__dirname, 'monkeydb.db');
+const dbPath = path.resolve(__dirname, 'TeamMonkeyDB.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Failed to connect to the database:', err.message);
@@ -33,15 +33,15 @@ app.post("/", (req, res) => {
 
 });
 
-app.get("/singup", (req, res) => {
+app.get("/signup", (req, res) => {
   
 });
 app.post("/signup",(req,res) =>{
-  const {firstName, lastName, email, password, userType} = req.body;
+  const {firstName, lastName, email, password, healthcareProvider} = req.body;
 
 
-  const insertUser = 'INSERT INTO users (firstName, secondName, email, password, userType) VALUES (?, ?, ?, ?, ?)';
-  db.run(insertUser, [firstName, lastName, email, password, userType], (err) => {
+  const insertUser = 'INSERT INTO patient (first, last, email, password, provider,bday,gender,treatment,allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
+  db.run(insertUser, [firstName, lastName, email, password, healthcareProvider], (err) => {
     if (err) {
       if(err.code === 'SQLITE_CONSTRAINT') {
         return res.status(409).json({ message: 'Email already exists' });

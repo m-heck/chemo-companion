@@ -21,7 +21,13 @@ function Signup({ onSignupSuccess }) {
       alert('Please select a healthcare provider.');
       return;
     }
-
+    axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
+    .then(response => {
+      console.log('Signup successful');
+    })
+    .catch(error => {
+      console.error('There was an error!', error);
+    });
     // Simulating a successful signup without actual backend call
     console.log('Signup successful (mock)');
     navigate('/patient-data/edit'); // Navigate to the Patient Data page
