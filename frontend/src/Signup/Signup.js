@@ -4,36 +4,42 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../Footer/Footer';
 import axios from 'axios';
 
-
 function Signup({ onSignupSuccess }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('patient'); 
-  
+  const [healthcareProvider, setHealthcareProvider] = useState('');
+
   const navigate = useNavigate();
 
   const handleSignupSuccess = (e) => {
     e.preventDefault();
+
+    if (userType === 'patient' && !healthcareProvider) {
+      alert('Please select a healthcare provider.');
+      return;
+    }
+
     // Simulating a successful signup without actual backend call
     console.log('Signup successful (mock)');
     navigate('/patient-data/edit'); // Navigate to the Patient Data page
   };
 
-  /* TODO: remove once backend is working
-const handleSignupSuccess = (e) => {
-  e.preventDefault();
-  axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType })
-    .then(response => {
-      console.log('Signup successful');
-      // Navigate to the edit version of patient data page
-      navigate('/patient-data/edit');
-    })
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
-};*/
+  /*
+  const handleSignupSuccess = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
+      .then(response => {
+        console.log('Signup successful');
+        navigate('/patient-data/edit');
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+  };
+  */
 
   return (
     <div className="Signup">
@@ -114,7 +120,25 @@ const handleSignupSuccess = (e) => {
                 <span className="radio-custom">Healthcare Worker</span>
                 </label>
             </div>
+          </div>
+
+          {userType === 'patient' && (
+            <div className="input-group">
+              <label htmlFor="healthcare-provider">Healthcare Provider</label>
+              <select
+                id="healthcare-provider"
+                required
+                value={healthcareProvider}
+                onChange={(e) => setHealthcareProvider(e.target.value)}
+              >
+                <option value="" disabled>Select your healthcare provider</option>
+                <option value="Florida Hospital">Florida Hospital</option>
+                <option value="Orlando Chemotherapy Clinic">Orlando Chemotherapy Clinic</option>
+                <option value="Miami Cancer Institute">Miami Cancer Institute</option>
+                {/* Add more options as needed */}
+              </select>
             </div>
+          )}
 
           <button type="submit" className="signup-button">Sign Up</button>
         </form>

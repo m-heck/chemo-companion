@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Notification from '../Notification/Notification';
 import { useNavigate } from 'react-router-dom';
 
-function HealthcareNavBar({ onSignOut }) {
+function NavBar({ onSignOut }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleProfileClick = () => {
@@ -21,14 +21,15 @@ function HealthcareNavBar({ onSignOut }) {
   return (
     <header className="NavBar">
       <div className="logo">
-        <Link to="/provider">
+        <Link to="/home">
           <img src={logo} alt="ChemoCompanion Logo" />
         </Link>
       </div>
       <nav>
-        <Link to="/provider" className="nav-button">Healthcare Home</Link>
-        <Link to="/provider/send-notification" className="nav-button">Create Notifications</Link>
+        <Link to="/home" className="nav-button">Home</Link>
         <Link to="/chatbot" className="nav-button">AI Chatbot Page</Link>
+        <Link to="/resources" className="nav-button">Resources</Link>
+        <Link to="/patient-data" className="nav-button">Patient Data</Link>
 
         <Notification />
 
@@ -46,4 +47,4 @@ function HealthcareNavBar({ onSignOut }) {
   );
 }
 
-export default HealthcareNavBar;
+export default NavBar;
