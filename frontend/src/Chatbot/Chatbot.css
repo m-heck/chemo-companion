@@ -1,21 +1,41 @@
+/* Chatbot.css */
+
+.Chatbot {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.Chatbot-main {
+  flex-grow: 1;
+  padding: 60px 20px; /* Added more padding to the top */
+  width: 95%; /* Make the main container almost as wide as the screen */
+  max-width: 1200px; /* Ensures a reasonable max width */
+  margin: auto;
+  text-align: center;
+}
+
+.Chatbot-main h1 {
+  color: #032539;
+  margin-bottom: 20px; /* Added margin below the heading */
+}
+
 .chatbot-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   padding: 20px;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .chatbox {
   flex-grow: 1;
   padding: 10px;
-  max-height: 300px;
+  max-height: 600px; /* Increased max-height to utilize more screen space */
   overflow-y: auto;
   border-bottom: 1px solid #ddd;
   margin-bottom: 10px;

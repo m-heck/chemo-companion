@@ -1,24 +1,24 @@
-import React, { useState } from "react";
-import "./Chatbot.css";
+import React, { useState } from 'react';
+import './Chatbot.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('');
 
   const sendMessage = async () => {
     if (!userInput.trim()) return;
 
-    const newMessages = [...messages, { text: userInput, sender: "user" }];
+    const newMessages = [...messages, { text: userInput, sender: 'user' }];
     setMessages(newMessages);
-    setUserInput("");
+    setUserInput('');
 
     try {
-      const response = await fetch("http://localhost:3001/chat", {
-        method: "POST",
+      const response = await fetch('http://localhost:3001/chat', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: userInput }),
       });
@@ -27,45 +27,47 @@ function Chatbot() {
         const data = await response.json();
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: data.reply, sender: "bot" },
+          { text: data.reply, sender: 'bot' },
         ]);
       } else {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: `Error: ${response.statusText}`, sender: "bot" },
+          { text: `Error: ${response.statusText}`, sender: 'bot' },
         ]);
       }
     } catch (error) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: `Error: ${error.message}`, sender: "bot" },
+        { text: `Error: ${error.message}`, sender: 'bot' },
       ]);
     }
   };
 
   return (
     <div className="Chatbot">
-      <NavBar />  {}
+      <NavBar />
       <main className="Chatbot-main">
         <h1>Chat with ChemoCompanion</h1>
-        <div className="chatbox">
-          {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.sender}`}>
-              {msg.text}
-            </div>
-          ))}
-        </div>
-        <div className="input-container">
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Type your message here..."
-          />
-          <button onClick={sendMessage}>Send</button>
+        <div className="chatbot-container">
+          <div className="chatbox">
+            {messages.map((msg, index) => (
+              <div key={index} className={`message ${msg.sender}`}>
+                {msg.text}
+              </div>
+            ))}
+          </div>
+          <div className="input-container">
+            <input
+              type="text"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="Type your message here..."
+            />
+            <button onClick={sendMessage}>Send</button>
+          </div>
         </div>
       </main>
-      <Footer />  {}
+      <Footer />
     </div>
   );
 }
