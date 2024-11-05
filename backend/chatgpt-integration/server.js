@@ -6,9 +6,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 3001;
+
+const SECRET_KEY = process.env.SECRET_KEY; // Use the secret key from the environment variable
 
 app.use(cors());
 app.use(express.json());
@@ -34,52 +38,122 @@ app.post("/", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  
+  // Signup form or logic
 });
-app.post("/signup",(req,res) =>{
-  const {firstName, lastName, email, password, healthcareProvider} = req.body;
 
+// Create a new user
+app.post("/signup", (req, res) => {
+  const { firstName, lastName, email, password, healthcareProvider } = req.body;
 
-  const insertUser = 'INSERT INTO patient (first, last, email, password, provider,bday,gender,treatment,allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
-  db.run(insertUser, [firstName, lastName, email, password, healthcareProvider], (err) => {
+  // Hash the password before storing it in the database
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
-      if(err.code === 'SQLITE_CONSTRAINT') {
-        return res.status(409).json({ message: 'Email already exists' });
+      console.error('Error hashing password:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+
+    const insertUser = 'INSERT INTO patient (first, last, email, password, provider, bday, gender, treatment, allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
+    db.run(insertUser, [firstName, lastName, email, hashedPassword, healthcareProvider], (err) => {
+      if (err) {
+        if (err.code === 'SQLITE_CONSTRAINT') {
+          return res.status(409).json({ message: 'Email already exists' });
+        }
+        console.error('Database error:', err);
+        return res.status(500).json({ message: 'An error occurred' });
       }
+      return res.status(201).json({ message: 'User added successfully' });
+    });
+  });
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('Login request received for email:', email);
+
+  const findUser = 'SELECT * FROM patient WHERE email = ?';
+  db.get(findUser, [email], (err, user) => {
+    if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });
     }
-    return res.status(201).json({ message: 'User added successfully' });
-  });
+    if (!user) {
+      console.log('User not found for email:', email);
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
 
+    console.log('User found:', user);
+
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(500).json({ message: 'An error occurred' });
+      }
+      if (!isMatch) {
+        console.log('Password does not match for email:', email);
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+
+      console.log('Password matches for email:', email);
+
+      const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+      return res.status(200).json({ token });
+    });
+  });
 });
 
-app.post("/login",(req,res) =>{
-  const {email, password} = req.body;
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
+  if (token == null) return res.sendStatus(401);
 
-  const queryUser = 'SELECT * FROM patient WHERE email =  ? AND password = ?';
-  db.get(queryUser, [email, password], (err,row) => {
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
+app.get("/profile", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+
+  const getUserProfile = 'SELECT * FROM patient WHERE email = ?';
+  db.get(getUserProfile, [userEmail], (err, user) => {
     if (err) {
-      if(err.code === 'SQLITE_CONSTRAINT') {
-        return res.status(409).json({ message: 'error here' });
-      }
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });
     }
-    if(!row){
-      return res.status(404).json({ message: 'incorrect username or password' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    return res.status(201).json({ message: 'User added successfully' });
-  });
 
+    res.json({ profile: user });
+  });
 });
 
+// Update a user
+app.put("/update-user", authenticateToken, (req, res) => {
+  const { first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication } = req.body;
+  const email = req.user.email;
 
+  const updateUser = `
+    UPDATE patient
+    SET first = ?, last = ?, provider = ?, bday = ?, gender = ?, emergencyphone = ?, cancerdetail = ?, treatment = ?, allergy = ?, comorbid = ?, doctorinfo = ?, medication = ?
+    WHERE email = ?
+  `;
 
-
-
-
+  db.run(updateUser, [first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication, email], function(err) {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json({ message: 'User updated successfully' });
+  });
+});
 
 async function scrapeMayoClinic(message) {
   console.log("Scraping Mayo Clinic with message:", message);

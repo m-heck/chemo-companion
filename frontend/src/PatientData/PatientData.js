@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PatientData.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 
 function PatientData({ isEditMode, setEditMode }) {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     birthday: '',
     gender: '',
     emergencyContact: '',
@@ -19,6 +20,38 @@ function PatientData({ isEditMode, setEditMode }) {
     consentAcknowledgement: false,
   });
 
+  useEffect(() => {
+    // Fetch user data from the server using the JWT token
+    fetch('http://localhost:3001/profile', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setFormData({
+          firstName: data.profile.first,
+          lastName: data.profile.last,
+          birthday: data.profile.bday,
+          gender: data.profile.gender,
+          emergencyContact: data.profile.emergencyphone,
+          cancerTypeStage: data.profile.cancerdetail,
+          treatmentPlan: data.profile.treatment,
+          allergies: data.profile.allergy,
+          comorbidities: data.profile.comorbid,
+          doctorInfo: data.profile.doctorinfo,
+          medications: data.profile.medication,
+          aiAcknowledgement: false,
+          consentAcknowledgement: false,
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -29,15 +62,43 @@ function PatientData({ isEditMode, setEditMode }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.aiAcknowledgement) {
-      alert('You must acknowledge the AI chatbot.');
-      return;
-    }
-    if (!formData.consentAcknowledgement) {
-      alert('You must consent to share information.');
-      return;
-    }
-    setEditMode(false); // Switch to display mode
+
+    // Mapping form field names to database column names
+    const dbData = {
+      first: formData.firstName,
+      last: formData.lastName,
+      bday: formData.birthday,
+      gender: formData.gender,
+      emergencyphone: formData.emergencyContact,
+      cancerdetail: formData.cancerTypeStage,
+      treatment: formData.treatmentPlan,
+      allergy: formData.allergies,
+      comorbid: formData.comorbidities,
+      doctorinfo: formData.doctorInfo,
+      medication: formData.medications,
+    };
+
+    fetch('http://localhost:3001/update-user', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dbData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'User updated successfully') {
+          alert('User information updated successfully');
+          setEditMode(false);
+        } else {
+          alert('Failed to update user information');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred while updating user information');
+      });
   };
 
   return (
@@ -48,8 +109,12 @@ function PatientData({ isEditMode, setEditMode }) {
         {isEditMode ? (
           <form onSubmit={handleSubmit} className="patient-data-container">
             <label>
-              Name <span className="required">*</span>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+              First Name <span className="required">*</span>
+              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
+            </label>
+            <label>
+              Last Name <span className="required">*</span>
+              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
             </label>
             <label>
               Birthday <span className="required">*</span>
@@ -99,7 +164,8 @@ function PatientData({ isEditMode, setEditMode }) {
           </form>
         ) : (
           <div className="patient-data-display">
-            <div className="data-item"><strong>Name:</strong> {formData.name}</div>
+            <div className="data-item"><strong>First Name:</strong> {formData.firstName}</div>
+            <div className="data-item"><strong>Last Name:</strong> {formData.lastName}</div>
             <div className="data-item"><strong>Birthday:</strong> {formData.birthday}</div>
             <div className="data-item"><strong>Gender:</strong> {formData.gender}</div>
             <div className="data-item"><strong>Emergency Contact:</strong> {formData.emergencyContact}</div>

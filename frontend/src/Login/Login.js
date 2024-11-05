@@ -12,16 +12,23 @@ function Login({ onLoginSuccess }) {
 
   const handleLogin = (e) => {
     e.preventDefault(); 
-      axios.post('http://localhost:3001/login', { email, password})
+    console.log('Sending login request with email:', email);
+    axios.post('http://localhost:3001/login', { email, password })
       .then((res) => {
+        console.log('Login successful:', res.data);
+        const token = res.data.token;
+        localStorage.setItem('token', token); // Store the token in local storage
+        onLoginSuccess(); // Call the onLoginSuccess callback if provided
         navigate('/home');
-    })
-    .catch((error) =>{
-      if(error.response){
-        alert("Incorrect email or password.");
-        return;
-      }
-    });
+      })
+      .catch((error) => {
+        console.error('Login error:', error);
+        if (error.response) {
+          console.log('Login failed:', error.response.data);
+          alert("Incorrect email or password.");
+          return;
+        }
+      });
   };
 
   const handleSignupClick = () => {
@@ -37,29 +44,31 @@ function Login({ onLoginSuccess }) {
 
       <main className="Login-main">
         <h2>Log In</h2>
-        <div className="input-group">
-          <label htmlFor="email">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            required 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@example.com" 
-          />
-        </div>
-        <div className="input-group">
-          <label htmlFor="password">Password</label>
-          <input 
-            type="password" 
-            id="password" 
-            required 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-            placeholder="••••••••" 
-          />
-        </div>
-        <button className="login-button" onClick={handleLogin}>Log In</button>
+        <form onSubmit={handleLogin}>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@example.com" 
+            />
+          </div>
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+              placeholder="••••••••" 
+            />
+          </div>
+          <button type="submit" className="login-button">Log In</button>
+        </form>
         <div className="options">
           <a href="#forgot-password" onClick={() => setModalOpen(true)} className="forgot-password">Forgot Password?</a>
           <a href="#sign-up" onClick={handleSignupClick} className="new-user">New User? Sign Up</a>

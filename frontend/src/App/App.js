@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css';
 import Landing from '../Landing/Landing';
 import Home from '../Home/Home';
@@ -15,12 +16,16 @@ import CreateNotification from '../CreateNotification/CreateNotification';
 function App() {
   const [isEditMode, setEditMode] = useState(false);
 
+  const handleLoginSuccess = () => {
+    console.log('Login successful');
+  };
+
   return (
     <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
           <Route path="/chatbot" element={<Chatbot />} />
@@ -36,7 +41,7 @@ function App() {
           <Route path="/resources" element={<Resources />} />
           <Route path="/healthcare-home" element={<HealthcareHome />} />
           <Route path="/create-notification" element={<CreateNotification />} />
-          </Routes>
+        </Routes>
       </div>
     </Router>
   );
