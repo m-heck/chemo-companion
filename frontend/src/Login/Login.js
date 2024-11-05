@@ -10,17 +10,18 @@ function Login({ onLoginSuccess }) {
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate(); 
 
-  const handleLogin = () => {
-    console.log("Email: ", email);
-    axios.post('http://localhost:3001', { email, password })
-      .then(response => {
-        console.log('Login successful');
+  const handleLogin = (e) => {
+    e.preventDefault(); 
+      axios.post('http://localhost:3001/login', { email, password})
+      .then((res) => {
         navigate('/home');
-        
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-      });
+    })
+    .catch((error) =>{
+      if(error.response){
+        alert("Incorrect email or password.");
+        return;
+      }
+    });
   };
 
   const handleSignupClick = () => {

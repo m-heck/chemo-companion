@@ -54,6 +54,27 @@ app.post("/signup",(req,res) =>{
 
 });
 
+app.post("/login",(req,res) =>{
+  const {email, password} = req.body;
+
+
+  const queryUser = 'SELECT * FROM patient WHERE email =  ? AND password = ?';
+  db.get(queryUser, [email, password], (err,row) => {
+    if (err) {
+      if(err.code === 'SQLITE_CONSTRAINT') {
+        return res.status(409).json({ message: 'error here' });
+      }
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    if(!row){
+      return res.status(404).json({ message: 'incorrect username or password' });
+    }
+    return res.status(201).json({ message: 'User added successfully' });
+  });
+
+});
+
 
 
 
