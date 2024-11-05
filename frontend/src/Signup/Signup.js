@@ -14,22 +14,27 @@ function Signup({ onSignupSuccess }) {
 
   const navigate = useNavigate();
 
-  const handleSignupSuccess = (e) => {
+  const handleSignupSuccess = async (e) => {
     e.preventDefault();
 
     if (userType === 'patient' && !healthcareProvider) {
       alert('Please select a healthcare provider.');
       return;
     }
-    axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
-    .then(response => {
-      console.log('Signup successful');
-    })
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
-    // Simulating a successful signup without actual backend call
-    console.log('Signup successful (mock)');
+    try{
+      const response = await axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider });
+      
+    }
+    catch(error){
+      if(error.response){
+        alert("This email is already associated with an account.");
+        return;
+      }
+    }
+    navigate('/patient-data/edit');
+    
+    
+  
     navigate('/patient-data/edit'); // Navigate to the Patient Data page
   };
 
