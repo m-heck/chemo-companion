@@ -14,28 +14,28 @@ function Signup({ onSignupSuccess }) {
 
   const navigate = useNavigate();
 
-  const handleSignupSuccess = async (e) => {
+  const handleSignupSuccess = (e) => {
     e.preventDefault();
 
     if (userType === 'patient' && !healthcareProvider) {
       alert('Please select a healthcare provider.');
       return;
     }
-    try{
-      const response = await axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider });
-      
-    }
-    catch(error){
+    
+      axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
+      .then((res) => {
+        navigate('/patient-data/edit');
+    })
+    .catch((error) =>{
       if(error.response){
         alert("This email is already associated with an account.");
         return;
       }
-    }
-    navigate('/patient-data/edit');
+    });
     
     
   
-    navigate('/patient-data/edit'); // Navigate to the Patient Data page
+     // Navigate to the Patient Data page
   };
 
   /*
