@@ -67,12 +67,12 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, userType } = req.body;
 
   console.log('Login request received for email:', email);
 
-  const findUser = 'SELECT * FROM patient WHERE email = ?';
-  db.get(findUser, [email], (err, user) => {
+  const findUser = 'SELECT * FROM patient WHERE email = ? AND usertype = ?';
+  db.get(findUser, [email,userType], (err, user) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });

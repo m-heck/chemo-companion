@@ -7,19 +7,25 @@ import Footer from '../Footer/Footer';
 function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate(); 
 
   const handleLogin = (e) => {
     e.preventDefault(); 
     console.log('Sending login request with email:', email);
-    axios.post('http://localhost:3001/login', { email, password })
+    axios.post('http://localhost:3001/login', { email, password, userType })
       .then((res) => {
         console.log('Login successful:', res.data);
         const token = res.data.token;
         localStorage.setItem('token', token); // Store the token in local storage
         onLoginSuccess(); // Call the onLoginSuccess callback if provided
-        navigate('/home');
+        if(userType === "healthcare-worker"){
+          navigate('/healthcare-home');
+        }
+        else{
+          navigate('/patient-data/edit');
+        }
       })
       .catch((error) => {
         console.error('Login error:', error);
@@ -73,6 +79,37 @@ function Login({ onLoginSuccess }) {
           <a href="#forgot-password" onClick={() => setModalOpen(true)} className="forgot-password">Forgot Password?</a>
           <a href="#sign-up" onClick={handleSignupClick} className="new-user">New User? Sign Up</a>
         </div>
+
+
+        <div className="input-group user-type">
+            <label>User Type</label>
+            <div className="radio-group">
+                <label className="radio-label">
+                <input
+                    type="radio"
+                    value="patient"
+                    checked={userType === 'patient'}
+                    onChange={(e) => setUserType(e.target.value)}
+                    className="radio-input"
+                />
+                <span className="radio-custom">Patient</span>
+                </label>
+                <label className="radio-label">
+                <input
+                    type="radio"
+                    value="healthcare-worker"
+                    checked={userType === 'healthcare-worker'}
+                    onChange={(e) => setUserType(e.target.value)}
+                    className="radio-input"
+                />
+                <span className="radio-custom">Healthcare Worker</span>
+                </label>
+            </div>
+          </div>
+
+
+
+
       </main>
 
       {isModalOpen && (
