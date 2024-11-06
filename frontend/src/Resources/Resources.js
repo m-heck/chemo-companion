@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
 import './Resources.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
-import { useNavigate } from 'react-router-dom';
 
 function Resources() {
-    const navigate = useNavigate();
-    const [activeAccordion, setActiveAccordion] = useState(null);
-
-    const toggleAccordion = (index) => {
-        setActiveAccordion(activeAccordion === index ? null : index);
-    };
-
     return (
         <div className="Resources">
             <NavBar /> 

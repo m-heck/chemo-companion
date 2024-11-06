@@ -56,6 +56,15 @@ The platform is designed with both patients and medical staff in mind. For patie
 
 
 ## User Guide
+- '''npm install''' within "...\chemo-companion"
+
+### Backend
 - '''npm install''' and '''npm install cors'' within "...\chemo-companion\backend\chatgpt-integration"
-- '''npm install''' within "...\chemo-companion\backend\chatgpt-integration"
 - Must have .env file within within "...\chemo-companion\backend\chatgpt-integration" OPENAI_API_KEY = "your api key here"
+
+### Frontend
+- cd frontend
+- '''npm install''' to install dependencies
+- Run '''npm start''' to start the app in development mode. Visit http://localhost:3000 to view the app.
+- For production, use '''npm run build''' to create a production build in the build folder.
+- Run '''npm test''' to launch the test runner in the interactive watch mode.\

@@ -2,7 +2,6 @@ import './Navbar.css';
 import logo from '../Navbar/logo.png'; 
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import Notification from '../Notification/Notification';
 import { useNavigate } from 'react-router-dom';
 
 function HealthcareNavBar({ onSignOut }) {
