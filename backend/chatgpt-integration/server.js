@@ -43,7 +43,7 @@ app.get("/signup", (req, res) => {
 
 // Create a new user
 app.post("/signup", (req, res) => {
-  const { firstName, lastName, email, password, healthcareProvider } = req.body;
+  const { firstName, lastName, email, password, healthcareProvider, userType} = req.body;
 
   // Hash the password before storing it in the database
   bcrypt.hash(password, 10, (err, hashedPassword) => {
@@ -52,8 +52,8 @@ app.post("/signup", (req, res) => {
       return res.status(500).json({ message: 'An error occurred' });
     }
 
-    const insertUser = 'INSERT INTO patient (first, last, email, password, provider, bday, gender, treatment, allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
-    db.run(insertUser, [firstName, lastName, email, hashedPassword, healthcareProvider], (err) => {
+    const insertUser = 'INSERT INTO patient (first, last, email, password, provider, usertype, bday, gender, treatment, allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
+    db.run(insertUser, [firstName, lastName, email, hashedPassword, healthcareProvider, userType], (err) => {
       if (err) {
         if (err.code === 'SQLITE_CONSTRAINT') {
           return res.status(409).json({ message: 'Email already exists' });

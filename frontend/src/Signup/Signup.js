@@ -22,9 +22,15 @@ function Signup({ onSignupSuccess }) {
       return;
     }
     
-      axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
+      axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, healthcareProvider, userType})
       .then((res) => {
-        navigate('/patient-data/edit');
+        if(userType === "healthcare-worker"){
+          navigate('/healthcare-home');
+        }
+        else{
+          navigate('/patient-data/edit');
+        }
+        
     })
     .catch((error) =>{
       if(error.response){
@@ -143,6 +149,23 @@ function Signup({ onSignupSuccess }) {
                 onChange={(e) => setHealthcareProvider(e.target.value)}
               >
                 <option value="" disabled>Select your healthcare provider</option>
+                <option value="Florida Hospital">Florida Hospital</option>
+                <option value="Orlando Chemotherapy Clinic">Orlando Chemotherapy Clinic</option>
+                <option value="Miami Cancer Institute">Miami Cancer Institute</option>
+                {/* Add more options as needed */}
+              </select>
+            </div>
+          )}
+          {userType === 'healthcare-worker' && (
+            <div className="input-group">
+              <label htmlFor="healthcare-provider">Healthcare Provider</label>
+              <select
+                id="healthcare-provider"
+                required
+                value={healthcareProvider}
+                onChange={(e) => setHealthcareProvider(e.target.value)}
+              >
+                <option value="" disabled>Select the healthcare provider that you are affiliated with</option>
                 <option value="Florida Hospital">Florida Hospital</option>
                 <option value="Orlando Chemotherapy Clinic">Orlando Chemotherapy Clinic</option>
                 <option value="Miami Cancer Institute">Miami Cancer Institute</option>

@@ -76,6 +76,7 @@ function PatientData({ isEditMode, setEditMode }) {
       comorbid: formData.comorbidities,
       doctorinfo: formData.doctorInfo,
       medication: formData.medications,
+      usertype: formData.userType
     };
 
     fetch('http://localhost:3001/update-user', {
