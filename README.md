@@ -61,6 +61,7 @@ The platform is designed with both patients and medical staff in mind. For patie
 ### Backend
 - '''npm install''' and '''npm install cors'' within "...\chemo-companion\backend\chatgpt-integration"
 - Must have .env file within within "...\chemo-companion\backend\chatgpt-integration" OPENAI_API_KEY = "your api key here"
+- Run '''npm start''' in "...\chemo-companion\backend\chatgpt-integration"
 
 ### Frontend
 - cd frontend
