@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import './Notification.css';
+import React from 'react';
 
 function Notification() {
   const [isOpen, setIsOpen] = useState(false);

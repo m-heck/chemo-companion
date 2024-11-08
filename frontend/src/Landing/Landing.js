@@ -1,3 +1,4 @@
+import React from 'react';
 import './Landing.css';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Footer/Footer';

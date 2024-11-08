@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Notification from '../Notification/Notification';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 function NavBar({ onSignOut }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);

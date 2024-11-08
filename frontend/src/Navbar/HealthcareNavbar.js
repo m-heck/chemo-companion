@@ -3,6 +3,7 @@ import logo from '../Navbar/logo.png';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import React from 'react'
 
 function HealthcareNavBar({ onSignOut }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);

@@ -2,6 +2,7 @@ import './Home.css';
 import NavBar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 function Home() {
   return (
