@@ -75,8 +75,7 @@ function PatientData({ isEditMode, setEditMode }) {
       allergy: formData.allergies,
       comorbid: formData.comorbidities,
       doctorinfo: formData.doctorInfo,
-      medication: formData.medications,
-      usertype: formData.userType
+      medication: formData.medications
     };
 
     fetch('http://localhost:3001/update-user', {
