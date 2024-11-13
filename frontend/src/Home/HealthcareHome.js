@@ -1,24 +1,39 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import './HealthcareHome.css';
 import HealthcareNavbar from '../Navbar/HealthcareNavbar'; 
 import Footer from '../Footer/Footer';
 import PatientWidget from './PatientWidget';
 
-const mockPatients = [
-  { id: 1, name: 'John Doe', birthday: '1980-05-01', gender: 'Male', cancerTypeStage: 'Lung Cancer Stage II', treatmentPlan: 'Chemotherapy', allergies: 'None', comorbidities: 'Hypertension' },
-  { id: 2, name: 'Jane Smith', birthday: '1975-11-20', gender: 'Female', cancerTypeStage: 'Breast Cancer Stage I', treatmentPlan: 'Radiation Therapy', allergies: 'Penicillin', comorbidities: 'Diabetes' },
-];
 
 function HealthcareHome() {
+  const [userList, setUserList] = useState([]);
+useEffect(() => {
+  fetch('http://localhost:3001/profilelist', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      setUserList([data.profile]);
+    })
+    .catch((error) => {
+      console.error('Error fetching user data:', error);
+    });
+}, []);
   return (
+    
     <div className="HealthcareHome">
       <HealthcareNavbar />
       <main className="HealthcareHome-main">
         <h1>Healthcare Provider Dashboard</h1>
-        {mockPatients.map(patient => (
+        {userList.map(user => (
           <PatientWidget
-            key={patient.id}
-            patientData={patient}
+            key={user.email}
+            patientData={user}
           />
         ))}
       </main>
