@@ -157,11 +157,46 @@ app.get("/profile", authenticateToken, (req, res) => {
   });
 });
 
+// app.get("/profilelist", authenticateToken, (req, res) => {
+//   const userEmail = req.user.email;
+
+//   const getUserProfile = 'SELECT * FROM patient WHERE usertype = ?';
+//   db.all(getUserProfile, ['patient'], (err, user) => {
+//     if (err) {
+//       console.error('Database error:', err);
+//       return res.status(500).json({ message: 'An error occurred' });
+//     }
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.json({ profile: user });
+//   });
+// });
+
 app.get("/profilelist", authenticateToken, (req, res) => {
   const userEmail = req.user.email;
 
-  const getUserProfile = 'SELECT * FROM patient WHERE usertype = ?';
-  db.get(getUserProfile, ['patient'], (err, user) => {
+
+  // const getprovider = 'SELECT provider FROM patient WHERE email = ?';
+
+  // theprovider = '';
+  
+  // db.get(getprovider, [userEmail], (err, user) => {
+  //   if (err) {
+  //     console.error('Database error:', err);
+  //     return res.status(500).json({ message: 'An error occurred' });
+  //   }
+  //   if (!user) {
+  //     return res.status(404).json({ message: 'User not found' });
+  //   }
+
+  //   theprovider = user.provider;
+  // });
+
+
+  const getUserProfile = 'SELECT * FROM patient WHERE usertype = ? AND provider = (SELECT provider FROM patient WHERE email = ?)';
+  db.all(getUserProfile, ['patient', userEmail], (err, user) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });

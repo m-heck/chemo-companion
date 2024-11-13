@@ -18,7 +18,7 @@ useEffect(() => {
   })
     .then((response) => response.json())
     .then((data) => {
-      setUserList([data.profile]);
+      setUserList(data.profile);
     })
     .catch((error) => {
       console.error('Error fetching user data:', error);
