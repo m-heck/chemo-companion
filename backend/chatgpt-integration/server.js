@@ -28,6 +28,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
+// JWT blacklist
+let tokenBlacklist = [];
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Chatbot API is running!");
@@ -41,7 +44,7 @@ app.get("/signup", (req, res) => {
   // Signup form or logic
 });
 
-// Create a new user
+// Create a new user (healthcare provider or patient)
 app.post("/signup", (req, res) => {
   const { firstName, lastName, email, password, healthcareProvider, userType} = req.body;
 
@@ -52,6 +55,7 @@ app.post("/signup", (req, res) => {
       return res.status(500).json({ message: 'An error occurred' });
     }
 
+    //Insert patient into database if no errors, fill with null values if no information providied
     const insertUser = 'INSERT INTO patient (first, last, email, password, provider, usertype, bday, gender, treatment, allergy, comorbid, doctorinfo, medication) VALUES (?, ?, ?, ?, ?, ?, null, null, null, null, null, null, null)';
     db.run(insertUser, [firstName, lastName, email, hashedPassword, healthcareProvider, userType], (err) => {
       if (err) {
@@ -66,6 +70,7 @@ app.post("/signup", (req, res) => {
   });
 });
 
+//Login by comparing password hash
 app.post("/login", (req, res) => {
   const { email, password, userType } = req.body;
 
@@ -102,6 +107,26 @@ app.post("/login", (req, res) => {
   });
 });
 
+// Sign-out route to blacklist the token and invalidate it
+app.post('/signout', (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  tokenBlacklist.push(token);
+  res.status(200).send({ message: 'Signed out successfully' });
+});
+
+// Check if token is blacklisted before accessing protected routes
+const checkBlacklist = (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1];
+  if (tokenBlacklist.includes(token)) {
+    return res.status(401).send({ message: 'Token is invalid' });
+  }
+  next();
+};
+
+// Apply the middleware to protected routes
+app.use('/protected', checkBlacklist);
+
+// When the user is authenticated, they can access the protected route
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -268,10 +293,16 @@ async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummar
     ];
 
     const response = await axios.post("https://api.openai.com/v1/chat/completions", {
-      model: "gpt-4o-mini", // Ensure this model is available for your account
+      model: "gpt-4o-mini", 
       messages: messages,
       max_tokens: 200,
-      temperature: 0.5
+      temperature: 0.1,
+      //Penalty for repeated tokens
+      frequency_penalty: 0.1,
+      //Penalty for tokens that are present before
+      presence_penalty: 0.1,
+      //Considers a smaller set of probably outcomes 
+      top_p: 0.5
     }, {
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
