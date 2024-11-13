@@ -180,10 +180,10 @@ app.put("/update-user", authenticateToken, (req, res) => {
   });
 });
 
-async function scrapeMayoClinic(message) {
+async function scrapeMayoClinic(message,patientData) {
   console.log("Scraping Mayo Clinic with message:", message);
   try {
-    const response = await axios.get(`https://www.mayoclinic.org/search/search-results?q=${encodeURIComponent(message)}`, {
+    const response = await axios.get(`https://www.mayoclinic.org/search/search-results?q=${encodeURIComponent(message)} ${encodeURIComponent(patientData)}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
       }
@@ -227,9 +227,9 @@ async function scrapeMayoClinic(message) {
 }
 
 // American Cancer Society Scraper
-async function scrapeCancerSociety(query) {
+async function scrapeCancerSociety(query, patientData) {
   try {
-    const url = `https://www.cancer.org/search.html?query=${encodeURIComponent(query)}`;
+    const url = `https://www.cancer.org/search.html?query=${encodeURIComponent(query)} ${encodeURIComponent(patientData)}`;
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
 
@@ -251,9 +251,9 @@ async function scrapeCancerSociety(query) {
 }
 
 // Google Scholar Scraper
-async function scrapeGoogleScholar(query) {
+async function scrapeGoogleScholar(query, patientData) {
   try {
-    const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
+    const url = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)} ${encodeURIComponent(patientData)}`;
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
 
@@ -270,24 +270,50 @@ async function scrapeGoogleScholar(query) {
   }
 }
 
-async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummary) {
+// Function to get patient data
+const getPatientData = (email, callback) => {
+  const query = 'SELECT * FROM patient WHERE email = ?';
+  db.get(query, [email], (err, row) => {
+    if (err) {
+      console.error('Failed to retrieve patient data:', err.message);
+      callback(err, null);
+    } else {
+      callback(null, row);
+    }
+  });
+};
+
+
+async function generateChatGPTResponse(patientData, mayoSummary, cancerSummary, scholarSummary, userMessage) {
   try {
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant providing advice based on medical and research summaries."
+        content: "You are a helpful assistant providing advice based on medical and research summaries. Be clear and not overwelhming.\
+        You are a professional chemotherapist, assisting patients who are undergoing chemotherapy treatments. \
+        You should maintain a caring, supportive, and informative tone, focusing on helping the user manage their treatment, side effects, and any concerns related to chemotherapy. \
+        Your goal is to guide patients through their chemotherapy journey, while making sure they understand the process, addressing their fears.\
+        You will also be given their health data, make sure to provide personalized advice based on their condition and the research results."
       },
       {
         role: "user",
         content: `
           Based on the following information, provide a personalized and condensed summary of advice for a patient that just got out of chemotherapy:
           
+          - Patient Name: ${patientData.name}
+          - Age: ${patientData.age}
+          - Gender: ${patientData.gender}
+          - Cancer Type and Stage: ${patientData.cancerTypeStage}
+          - Treatment Plan: ${patientData.treatmentPlan}
+          
           - Mayo Clinic Insights: ${mayoSummary}
           - Cancer Society Recommendations: ${cancerSummary}
           - Research Highlights: ${scholarSummary}
           
+          - User's Message: ${userMessage}
+          
           Please offer the best advice and recommendations for the user based on the above information while being human and professional.
-          Make sure that the response is complete and under 200 tokens.
+          Make the response limited to 250 tokens. 
         `
       },
     ];
@@ -295,13 +321,13 @@ async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummar
     const response = await axios.post("https://api.openai.com/v1/chat/completions", {
       model: "gpt-4o-mini", 
       messages: messages,
-      max_tokens: 200,
+      max_tokens: 250,
       temperature: 0.1,
       //Penalty for repeated tokens
       frequency_penalty: 0.1,
       //Penalty for tokens that are present before
       presence_penalty: 0.1,
-      //Considers a smaller set of probably outcomes 
+      //Considers a smaller set of probable outcomes 
       top_p: 0.5
     }, {
       headers: {
@@ -309,7 +335,7 @@ async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummar
         "Content-Type": "application/json"
       }
     });
-
+    //GPT will have multiple responses, choose the first one and remove white space
     return response.data.choices[0].message.content.trim();
   } catch (error) {
     console.error("Error generating ChatGPT response:", error.message);
@@ -320,29 +346,47 @@ async function generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummar
 // /chat POST route
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).send({ message: 'Authorization header is missing' });
+    }
 
-    const [mayoSummary, cancerSummary, scholarSummary] = await Promise.all([
-      scrapeMayoClinic(message),
-      scrapeCancerSociety(message),
-      scrapeGoogleScholar(message)
-    ]);
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const email = decoded.email;
+    const { message } = req.body; 
 
-    // Print summaries to the terminal
-    //console.log("Mayo Clinic Summary:", mayoSummary);
-    console.log("Cancer Society Summary:", cancerSummary);
-    console.log("Google Scholar Summary:", scholarSummary);
+    getPatientData(email, async (err, patientData) => {
+      if (err) {
+        return res.status(500).send({ message: 'Failed to retrieve patient data' });
+      }
 
-    const personalizedAdvice = await generateChatGPTResponse(mayoSummary, cancerSummary, scholarSummary);
+      try {
+        const [mayoSummary, cancerSummary, scholarSummary] = await Promise.all([
+          scrapeMayoClinic(message, patientData.cancerTypeStage),
+          scrapeCancerSociety(message, patientData.cancerTypeStage),
+          scrapeGoogleScholar(message, patientData.cancerTypeStage)
+        ]);
 
-    res.json({ reply: personalizedAdvice });
+        // Print summaries to the terminal
+        //console.log("Mayo Clinic Summary:", mayoSummary);
+        console.log("Cancer Society Summary:", cancerSummary);
+        console.log("Google Scholar Summary:", scholarSummary);
+
+        const personalizedAdvice = await generateChatGPTResponse(patientData, mayoSummary, cancerSummary, scholarSummary, message);
+
+        res.json({ reply: personalizedAdvice });
+      } catch (error) {
+        console.error("Error generating advice:", error.message);
+        res.status(500).send({ message: 'Failed to generate advice' });
+      }
+    });
   } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ error: "Internal Server Error", detailedMessage: error.message });
+    console.error("Error in /chat endpoint:", error.message);
+    res.status(500).send({ message: 'Internal server error' });
   }
 });
 
-// Start the server
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });

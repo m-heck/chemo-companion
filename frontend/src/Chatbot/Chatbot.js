@@ -15,10 +15,13 @@ function Chatbot() {
     setUserInput('');
 
     try {
+      const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
       const response = await fetch('http://localhost:3001/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Include the token in the Authorization header
         },
         body: JSON.stringify({ message: userInput }),
       });
@@ -30,9 +33,10 @@ function Chatbot() {
           { text: data.reply, sender: 'bot' },
         ]);
       } else {
+        const errorData = await response.json();
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: `Error: ${response.statusText}`, sender: 'bot' },
+          { text: `Error: ${errorData.message}`, sender: 'bot' },
         ]);
       }
     } catch (error) {
