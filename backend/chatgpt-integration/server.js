@@ -132,6 +132,23 @@ app.get("/profile", authenticateToken, (req, res) => {
   });
 });
 
+app.get("/profilelist", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+
+  const getUserProfile = 'SELECT * FROM patient WHERE usertype = ?';
+  db.get(getUserProfile, ['patient'], (err, user) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ profile: user });
+  });
+});
+
 // Update a user
 app.put("/update-user", authenticateToken, (req, res) => {
   const { first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication } = req.body;
