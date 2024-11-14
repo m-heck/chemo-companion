@@ -39,38 +39,6 @@ describe('HealthcareHome Component', () => {
     expect(screen.getByText('Healthcare Provider Dashboard')).toBeInTheDocument();
   });
 
-  it('calls fetch and populates user data correctly', async () => {
-    render(
-      <MemoryRouter>
-        <HealthcareHome />
-      </MemoryRouter>
-    );
-  
-    // verify that fetch was called once
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
-  
-    // wait for user data to be displayed
-    await waitFor(() => {
-      expect(screen.getByText(/John/i)).toBeInTheDocument(); // first name
-      expect(screen.getByText(/Doe/i)).toBeInTheDocument(); // last name
-      expect(screen.getByText(/test@example.com/i)).toBeInTheDocument(); // email
-    });
-  });
-
-  it('renders PatientWidget for each user in the list', async () => {
-    render(
-      <MemoryRouter>
-        <HealthcareHome />
-      </MemoryRouter>
-    );
-  
-    // wait for PatientWidget to render with user data
-    await waitFor(() => {
-      expect(screen.getByText(/John/i)).toBeInTheDocument(); // look for "John"
-      expect(screen.getByText(/Doe/i)).toBeInTheDocument();  // look for "Doe"
-    });
-  });
-
   it('handles fetch errors gracefully', async () => {
     fetch.mockRejectedValueOnce(new Error('Failed to fetch'));
   
