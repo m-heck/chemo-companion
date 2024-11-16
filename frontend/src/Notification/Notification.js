@@ -25,13 +25,13 @@ function Notification() {
   return (
     <div className="notification-section">
       <div className="notification-bell-container" onClick={handleNotificationClick}>
-        <FontAwesomeIcon icon={faBell} className="notification-bell" />
+        <FontAwesomeIcon icon={faBell} className="notification-bell" data-testid="notification-bell"/>
         {notifications.length > 0 && (
           <span className="notification-badge">{notifications.length}</span>
         )}
       </div>
       {isOpen && (
-        <div className="notification-dropdown">
+        <div className="notification-dropdown" data-testid="notification-dropdown">
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <div key={notification.id} className="notification-item">

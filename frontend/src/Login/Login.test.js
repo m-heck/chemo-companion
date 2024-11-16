@@ -153,3 +153,25 @@ describe('login component', () => {
     expect(loginButton).toBeEnabled();
   });
 });
+
+it('opens and closes the modal on forgot password link click, and triggers action on Send Instructions click', () => {
+  render(
+    <Router>
+      <Login onLoginSuccess={jest.fn()} />
+    </Router>
+  );
+
+  // Step 1: Open the modal
+  const forgotPasswordLink = screen.getByText('Forgot Password?');
+  fireEvent.click(forgotPasswordLink);
+
+  // Verify the modal opens
+  expect(screen.getByText('Forgot Your Password?')).toBeInTheDocument();
+
+  // Step 2: Simulate clicking the "Send Instructions" button
+  const sendInstructionsButton = screen.getByText('Send Instructions');
+  fireEvent.click(sendInstructionsButton);
+
+  // Check if the modal closes after clicking the "Send Instructions" button
+  expect(screen.queryByText('Forgot Your Password?')).not.toBeInTheDocument();
+});

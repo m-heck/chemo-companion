@@ -89,3 +89,35 @@ describe('PatientData component', () => {
   });
 
 });
+
+it('updates form data correctly when input fields are changed', async () => {
+  const setEditMode = jest.fn();
+
+  await act(async () => {
+    renderPatientData(true, setEditMode);
+  });
+
+  // Test text input fields
+  const firstNameInput = screen.getByLabelText(/first name/i);
+  fireEvent.change(firstNameInput, { target: { value: 'Jane' } });
+  expect(firstNameInput.value).toBe('Jane');
+
+  const lastNameInput = screen.getByLabelText(/last name/i);
+  fireEvent.change(lastNameInput, { target: { value: 'Smith' } });
+  expect(lastNameInput.value).toBe('Smith');
+
+  // Test checkbox input fields
+  const aiAcknowledgementCheckbox = screen.getByLabelText(/AI Chatbot Acknowledgement/i);
+  fireEvent.click(aiAcknowledgementCheckbox);
+  expect(aiAcknowledgementCheckbox.checked).toBe(true);
+
+  const consentAcknowledgementCheckbox = screen.getByLabelText(/Consent to Share Information Acknowledgement/i);
+  fireEvent.click(consentAcknowledgementCheckbox);
+  expect(consentAcknowledgementCheckbox.checked).toBe(true);
+
+  // Verify the form data state is updated correctly
+  expect(screen.getByLabelText(/first name/i).value).toBe('Jane');
+  expect(screen.getByLabelText(/last name/i).value).toBe('Smith');
+  expect(aiAcknowledgementCheckbox.checked).toBe(true);
+  expect(consentAcknowledgementCheckbox.checked).toBe(true);
+});
