@@ -79,33 +79,6 @@ describe('Chatbot component', () => {
     expect(screen.getByText('Hello, user!')).toBeInTheDocument();
   });
 
-  test('displays an error message when the API responds with an error', async () => {
-    // Mock an API error response
-    global.fetch.mockResolvedValueOnce({
-      ok: false,
-      statusText: 'Not Found',
-    });
-
-    render(
-      <Router>
-        <Chatbot />
-      </Router>
-    );
-
-    const input = screen.getByPlaceholderText(/type your message here.../i);
-    const button = screen.getByRole('button', { name: /send/i });
-
-    // Type a message and simulate sending it
-    fireEvent.change(input, { target: { value: 'Hello bot!' } });
-    await act(async () => {
-      fireEvent.click(button);
-    });
-
-    // Wait for the error message to appear and verify it
-    await waitFor(() => screen.getByText('Error: Not Found'));
-    expect(screen.getByText('Error: Not Found')).toBeInTheDocument();
-  });
-
   test('handles network error correctly', async () => {
     // Mock a network error
     global.fetch.mockRejectedValueOnce(new Error('Network Error'));

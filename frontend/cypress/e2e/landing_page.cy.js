@@ -1,6 +1,6 @@
 describe('Landing Page', () => {
   beforeEach(() => {
-    cy.visit('/') // Adjust the URL if necessary
+    cy.visit('/')
   })
 
   it('successfully loads', () => {
