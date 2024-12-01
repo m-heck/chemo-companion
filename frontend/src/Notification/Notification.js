@@ -8,25 +8,31 @@ import axios from 'axios';
 function Notification() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  useEffect(() => {
-    fetch('http://localhost:3001/getnotifications', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setNotifications(data.profile);
-      })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
-  }, []);
 
+  const shownotification = () =>{
+
+      fetch('http://localhost:3001/getnotifications', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setNotifications(data.profile);
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+        });
+
+  };
+  useEffect(() => {
+    shownotification();
+  }, []);
   const handleNotificationClick = () => {
     setIsOpen(!isOpen);
+    shownotification();
   };
 
   const handleDismiss = (notification) => {
@@ -35,6 +41,7 @@ function Notification() {
       'Content-Type': 'application/json',
     }})
     .then((res) => {   
+      shownotification();
     })
   .catch((error) =>{
     if(error.response){
