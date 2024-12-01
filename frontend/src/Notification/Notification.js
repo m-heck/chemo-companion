@@ -1,26 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import './Notification.css';
 import React from 'react';
+import axios from 'axios';
 
 function Notification() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: 'Yay Team Monkeys :)' },
-    { id: 2, message: 'New symptom tracking report available. Please review your entries.' },
-    { id: 3, message: 'Upcoming appointment: Chemotherapy session scheduled for Thursday at 2 PM.' },
-    { id: 4, message: 'Make sure you stay hydrated!' },
-    { id: 5, message: 'You received a new message from your healthcare provider!'},
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3001/getnotifications', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setNotifications(data.profile);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+  }, []);
 
   const handleNotificationClick = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleDismiss = (id) => {
-    setNotifications((prev) => prev.filter(notification => notification.id !== id));
+  const handleDismiss = (notification) => {
+    axios.post('http://localhost:3001/deletenotification', {notification},{headers:{ 
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    }})
+    .then((res) => {   
+    })
+  .catch((error) =>{
+    if(error.response){
+      alert("error");
+      return;
+    }
+  });
   };
+  
 
   return (
     <div className="notification-section">
@@ -33,10 +56,10 @@ function Notification() {
       {isOpen && (
         <div className="notification-dropdown" data-testid="notification-dropdown">
           {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <div key={notification.id} className="notification-item">
-                {notification.message}
-                <button className="dismiss-button" onClick={() => handleDismiss(notification.id)}>x</button>
+            notifications.map((user) => (
+              <div key={user.notification} className="notification-item">
+                {user.notification}
+                <button className="dismiss-button" onClick={() => handleDismiss(user.notification)}>x</button>
               </div>
             ))
           ) : (

@@ -14,7 +14,10 @@ const port = 3001;
 
 const SECRET_KEY = process.env.SECRET_KEY; // Use the secret key from the environment variable
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -216,7 +219,7 @@ app.get("/getnotifications", authenticateToken, (req, res) => {
 
 
   const getUserProfile = 'SELECT notification FROM notifications WHERE email IN (SELECT email FROM patient WHERE usertype = ? AND provider = (SELECT provider FROM patient WHERE email = ?))'; 
-  db.all(getUserProfile, ['patient', userEmail], (err) => {
+  db.all(getUserProfile, ['patient', userEmail], (err,user) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });
@@ -240,6 +243,29 @@ app.post("/makenotification", authenticateToken, (req, res) => {
     return res.status(201).json({ message: 'notification added' });
   });
 });
+
+
+
+
+
+app.post("/deletenotification", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+
+  const {notification} = req.body;
+
+
+  const deletenoti = 'DELETE FROM notifications WHERE email = ? AND notification = ?'; 
+  db.run(deletenoti, [userEmail,notification], (err) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    return res.status(201).json({ message: 'notification added' });
+  })
+});
+
+
+
 
 
 
