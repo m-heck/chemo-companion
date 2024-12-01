@@ -237,7 +237,7 @@ app.post("/makenotification", authenticateToken, (req, res) => {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });
     }
-
+    return res.status(201).json({ message: 'notification added' });
   });
 });
 
