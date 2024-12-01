@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import './CreateNotification.css';
 import HealthcareNavbar from '../Navbar/HealthcareNavbar'; 
 import Footer from '../Footer/Footer';
+import axios from 'axios';
 
 function CreateNotification() {
-  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notification, setNotificationMessage] = useState('');
 
   const handleChangeMessage = (e) => {
     setNotificationMessage(e.target.value);
@@ -12,8 +13,22 @@ function CreateNotification() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Notification created: ${notificationMessage}`);
+    
+
+    axios.post('http://localhost:3001/makenotification', {notification},{headers:{ 
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    }})
+    .then((res) => {   
+    alert(`Notification created: ${notification}`);
     setNotificationMessage('');
+    })
+  .catch((error) =>{
+    if(error.response){
+      alert("error");
+      return;
+    }
+  });
   };
 
   return (
@@ -24,10 +39,11 @@ function CreateNotification() {
         <form onSubmit={handleSubmit}>
           <label>
             Notification Message:
-            <textarea
-              value={notificationMessage}
+            <input
+              type="text"
+              value={notification}
               onChange={handleChangeMessage}
-              required
+              
             />
           </label>
           <button type="submit">Create Notification</button>

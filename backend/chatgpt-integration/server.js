@@ -209,6 +209,51 @@ app.get("/profilelist", authenticateToken, (req, res) => {
   });
 });
 
+app.get("/getnotifications", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+
+
+
+
+  const getUserProfile = 'SELECT notification FROM notifications WHERE email IN (SELECT email FROM patient WHERE usertype = ? AND provider = (SELECT provider FROM patient WHERE email = ?))'; 
+  db.all(getUserProfile, ['patient', userEmail], (err) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+    res.json({ profile: user });
+  });
+});
+
+app.post("/makenotification", authenticateToken, (req, res) => {
+  const userEmail = req.user.email;
+
+  const {notification} = req.body;
+
+
+  const makenotification = 'INSERT INTO notifications SELECT email, ? AS notification FROM patient WHERE usertype = ? AND provider = (SELECT provider FROM patient WHERE email = ?)'; 
+  db.run(makenotification, [notification, 'patient', userEmail], (err) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Update a user
 app.put("/update-user", authenticateToken, (req, res) => {
   const { first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication } = req.body;
@@ -231,6 +276,8 @@ app.put("/update-user", authenticateToken, (req, res) => {
     return res.status(200).json({ message: 'User updated successfully' });
   });
 });
+
+
 
 async function scrapeMayoClinic(message,patientData) {
   console.log("Scraping Mayo Clinic with message:", message);
