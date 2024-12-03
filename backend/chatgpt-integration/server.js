@@ -218,8 +218,8 @@ app.get("/getnotifications", authenticateToken, (req, res) => {
 
 
 
-  const getUserProfile = 'SELECT notification FROM notifications WHERE email IN (SELECT email FROM patient WHERE usertype = ? AND provider = (SELECT provider FROM patient WHERE email = ?))'; 
-  db.all(getUserProfile, ['patient', userEmail], (err,user) => {
+  const getUserProfile = 'SELECT notification FROM notifications WHERE email = ?'; 
+  db.all(getUserProfile, [userEmail], (err,user) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });

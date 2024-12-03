@@ -46,14 +46,15 @@ describe('Server API Endpoints', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.text).toEqual('Chatbot API is running!');
   });
-
+  
+  //Have to change the credentials to something that doesn't exist in the database
   test('POST /signup should create a new user', async () => {
     const res = await request(app)
       .post('/signup')
       .send({
-        firstName: 'John',
+        firstName: 'Jack',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
+        email: 'Jack.doe@example.com',
         password: 'password123',
         healthcareProvider: 'Provider1',
         userType: 'patient'
