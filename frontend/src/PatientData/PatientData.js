@@ -43,14 +43,25 @@ function PatientData({ isEditMode, setEditMode }) {
           comorbidities: data.profile.comorbid,
           doctorInfo: data.profile.doctorinfo,
           medications: data.profile.medication,
-          aiAcknowledgement: false,
-          consentAcknowledgement: false,
+          aiAcknowledgement: !isEditMode ? true : false,
+          consentAcknowledgement: !isEditMode ? true : false,
         });
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
       });
   }, []);
+
+  useEffect(() => {
+    // Automatically set acknowledgements to true when viewing the data page
+    if (!isEditMode) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        aiAcknowledgement: true,
+        consentAcknowledgement: true,
+      }));
+    }
+  }, [isEditMode]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

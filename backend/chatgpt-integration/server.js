@@ -15,8 +15,8 @@ const port = 3001;
 const SECRET_KEY = process.env.SECRET_KEY; // Use the secret key from the environment variable
 
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
+  //origin: 'http://localhost:3000',
+  //credentials: true,
 }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -282,16 +282,16 @@ app.post("/deletenotification", authenticateToken, (req, res) => {
 
 // Update a user
 app.put("/update-user", authenticateToken, (req, res) => {
-  const { first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication } = req.body;
+  const { first, last, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication } = req.body;
   const email = req.user.email;
 
   const updateUser = `
     UPDATE patient
-    SET first = ?, last = ?, provider = ?, bday = ?, gender = ?, emergencyphone = ?, cancerdetail = ?, treatment = ?, allergy = ?, comorbid = ?, doctorinfo = ?, medication = ?
+    SET first = ?, last = ?, bday = ?, gender = ?, emergencyphone = ?, cancerdetail = ?, treatment = ?, allergy = ?, comorbid = ?, doctorinfo = ?, medication = ?
     WHERE email = ?
   `;
 
-  db.run(updateUser, [first, last, provider, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication, email], function(err) {
+  db.run(updateUser, [first, last, bday, gender, emergencyphone, cancerdetail, treatment, allergy, comorbid, doctorinfo, medication, email], function(err) {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({ message: 'An error occurred' });
