@@ -37,20 +37,6 @@ function Signup({ onSignupSuccess }) {
   };
   
 
-  /*
-  const handleSignupSuccess = (e) => {
-    e.preventDefault();
-    axios.post('http://localhost:3001/signup', { firstName, lastName, email, password, userType, healthcareProvider })
-      .then(response => {
-        console.log('Signup successful');
-        navigate('/patient-data/edit');
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-      });
-  };
-  */
-
   return (
     <div className="Signup">
       <div className="intro">
@@ -145,7 +131,7 @@ function Signup({ onSignupSuccess }) {
                 <option value="Florida Hospital">Florida Hospital</option>
                 <option value="Orlando Chemotherapy Clinic">Orlando Chemotherapy Clinic</option>
                 <option value="Miami Cancer Institute">Miami Cancer Institute</option>
-                {/* Add more options as needed */}
+                {}
               </select>
             </div>
           )}
@@ -162,7 +148,7 @@ function Signup({ onSignupSuccess }) {
                 <option value="Florida Hospital">Florida Hospital</option>
                 <option value="Orlando Chemotherapy Clinic">Orlando Chemotherapy Clinic</option>
                 <option value="Miami Cancer Institute">Miami Cancer Institute</option>
-                {/* Add more options as needed */}
+                {}
               </select>
             </div>
           )}
